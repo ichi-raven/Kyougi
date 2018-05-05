@@ -11,7 +11,7 @@ constexpr unsigned int Y_MAX = 480;
 
 
 
-constexpr unsigned int Trout_size = 20;//マス(正方形)一つのサイズ
+constexpr unsigned int TROUT_SIZE = 20;//マス(正方形)一つのサイズ,偶数にしないとややこしいことになります
 
 
 

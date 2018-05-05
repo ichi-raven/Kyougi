@@ -1,5 +1,7 @@
-#include "DxLib.h"
-#include<random>
+#include"Headers_include.hpp"
+#include"Constant_expressions.hpp"
+
+
 
 
 int Key[256];
@@ -38,12 +40,6 @@ int get_Rand(int min, int max)//w’è‚µ‚½’l‚Ì”ÍˆÍ‚Ì®”—”‚ğo—Í‚·‚éŠÖ”
 	return a(random_engine);
 
 }
-
-void myDraw_formatstring(int X, int Y, int cR, int cG, int cB, const char* str, int fonthandle)
-{
-	DrawFormatStringToHandle(X, Y, GetColor(255, 255, 255), fonthandle, str);
-}
-
 
 
 
