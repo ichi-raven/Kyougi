@@ -10,5 +10,6 @@
 
 #include"Agent.hpp"
 #include"Trout.hpp"
+#include"Game.hpp"
 
 #include"Draw.hpp"

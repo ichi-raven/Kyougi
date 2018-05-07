@@ -16,6 +16,8 @@ public:
 
 	void Draw_score(const int SCORE);//スコアを右上にでも描画
 
+	void Draw_Agent(const int INDEX_X, const int INDEX_Y, const int COLOR);//エージェント描画
+
 private:
 
 	std::vector<std::vector<int[2]> > Point;//ここでしか使わない表示用座標

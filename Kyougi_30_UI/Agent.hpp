@@ -9,7 +9,7 @@ class Agent
 {
 	Agent(int STATE);//状態変数のうち色を示すものを使う
 
-	void set_point(int IND_R, int IND_C);
+	void set_point(int IND_X, int IND_Y);
 
 	void move(int direction, std::vector<std::vector<Trout> > &stage);//方向指定して移動、方向はconstexpr
 
@@ -22,9 +22,9 @@ private:
 
 	int state;//色
 
-	int index_raw;//現在地行側index
+	int index_x;//現在地x側index
 
-	int index_col;//現在地列側index
+	int index_y;//現在地y側index
 
 
 };

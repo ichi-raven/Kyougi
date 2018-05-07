@@ -3,26 +3,14 @@
 
 
 
-int Trout::get_index_raw() const
+void Trout::set_score(int SCORE)
 {
-	return index_raw;
+	score = SCORE;
 }
 
-int Trout::get_index_col() const
+int Trout::get_score() const
 {
-	return index_col;
-}
-
-void Trout::set_point(int IND_R, int IND_C)
-{
-	index_raw = IND_R;
-
-	index_col = IND_C;
-}
-
-void Trout::set_number(int NUMBER)
-{
-	number = NUMBER;
+	return score;
 }
 
 void Trout::set_state(int STATE)

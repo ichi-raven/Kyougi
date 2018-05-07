@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
     <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Trout.cpp" />
   </ItemGroup>
@@ -139,6 +140,7 @@
     <ClInclude Include="Agent.hpp" />
     <ClInclude Include="Constant_expressions.hpp" />
     <ClInclude Include="Draw.hpp" />
+    <ClInclude Include="Game.hpp" />
     <ClInclude Include="Headers_include.hpp" />
     <ClInclude Include="Trout.hpp" />
   </ItemGroup>
