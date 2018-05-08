@@ -7,24 +7,32 @@ class Trout;
 
 class Agent
 {
-	Agent(int STATE);//状態変数のうち色を示すものを使う
+	//Agent();
 
-	void set_point(int IND_X, int IND_Y);
+	void set_point(const int X, const int Y);
+
+	int get_xpoint() const;
+
+	int get_ypoint() const;
+
+	void set_color(const int STATE);
+
+	int get_color() const;
 
 	void move(int direction, std::vector<std::vector<Trout> > &stage);//方向指定して移動、方向はconstexpr
 
 	void remove(int direction, std::vector<std::vector<Trout> > &stage);//方向指定して撤去、方向はry
 
-	void deploy(int direction, int color, std::vector<std::vector<Trout> > &stage);//方向指定して設置、方向、色はry
+	void deploy(int direction, int COLOR, std::vector<std::vector<Trout> > &stage);//方向指定して設置、方向、色はry
 
 
 private:
 
-	int state;//色
+	int color;//色
 
-	int index_x;//現在地x側index
+	int mX;//現在地x
 
-	int index_y;//現在地y側index
+	int mY;//現在地y
 
 
 };

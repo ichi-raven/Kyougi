@@ -6,7 +6,8 @@
 #include<iostream>
 #include<cassert>
 #include<random>
-
+#include<functional>
+#include<algorithm>
 
 #include"Agent.hpp"
 #include"Trout.hpp"

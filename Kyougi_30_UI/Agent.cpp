@@ -2,21 +2,34 @@
 #include"Constant_expressions.hpp"
 
 
-Agent::Agent(int STATE)
-{
-	state = STATE;
 
-	if (state != BLUE && state != YELLOW)
-		assert(!"color isn't right");
+
+
+void Agent::set_point(const int X, const int Y)
+{
+	mX = X;
+	
+	mY = Y;
 }
 
-
-
-void Agent::set_point(int IND_X, int IND_Y)
+int Agent::get_xpoint() const
 {
-	index_x = IND_X;
+	return mX;
+}
 
-	index_y = IND_Y;
+int Agent::get_ypoint() const
+{
+	return mY;
+}
+
+void Agent::set_color(const int COLOR)
+{
+	color = COLOR;
+}
+
+int Agent::get_color() const
+{
+	return color;
 }
 
 void Agent::move(int direction, std::vector<std::vector<Trout> > &stage)
@@ -24,51 +37,51 @@ void Agent::move(int direction, std::vector<std::vector<Trout> > &stage)
 	switch (direction)
 	{
 	case UP:
-		if(index_x > 0)
-			--index_x;
+		if(mY > 0)
+			--mY;
 		break;
 
 	case DOWN:
-		if (index_x < stage[0].size())
-			++index_x;
+		if (mY < stage[0].size())
+			++mY;
 		break;
 
 	case RIGHT:
-		if (index_y < stage.size())
-			++index_y;
+		if (mX < stage.size())
+			++mX;
 		break;
 
 	case LEFT:
-		if (index_y > 0)
-			--index_y;
+		if (mX > 0)
+			--mX;
 		break;
 
 	case UP_RIGHT:
-		if (index_x > 0)
-			--index_x;
-		if (index_y < stage.size())
-			++index_y;
+		if (mY > 0)
+			--mY;
+		if (mX < stage.size())
+			++mX;
 		break;
 
 	case DOWN_RIGHT:
-		if (index_x < stage[0].size())
-			++index_x;
-		if (index_y < stage.size())
-			++index_y;
+		if (mY < stage[0].size())
+			++mY;
+		if (mX < stage.size())
+			++mX;
 		break;
 
 	case DOWN_LEFT:
-		if (index_x < stage[0].size())
-			++index_x;
-		if (index_y > 0)
-			--index_y;
+		if (mY < stage[0].size())
+			++mY;
+		if (mX > 0)
+			--mX;
 		break;
 
 	case UP_LEFT:
-		if (index_x > 0)
-			--index_x;
-		if (index_y > 0)
-			--index_y;
+		if (mY > 0)
+			--mY;
+		if (mX > 0)
+			--mX;
 
 		break;
 
@@ -82,58 +95,58 @@ void Agent::move(int direction, std::vector<std::vector<Trout> > &stage)
 
 void Agent::remove(int direction, std::vector<std::vector<Trout> > &stage)
 {
-	int removed_index_x = index_x;
+	int removed_mY = mY;
 
-	int removed_index_y = index_y;
+	int removed_mX = mX;
 
 	switch (direction)
 	{
 	case UP:
-		if (index_x > 0)
-			--removed_index_x;
+		if (mY > 0)
+			--removed_mY;
 		break;
 
 	case DOWN:
-		if (index_x < stage[0].size())
-			++removed_index_x;
+		if (mY < stage[0].size())
+			++removed_mY;
 		break;
 
 	case RIGHT:
-		if (index_y < stage.size())
-			++removed_index_y;
+		if (mX < stage.size())
+			++removed_mX;
 		break;
 
 	case LEFT:
-		if (index_y > 0)
-			--removed_index_y;
+		if (mX > 0)
+			--removed_mX;
 		break;
 
 	case UP_RIGHT:
-		if (index_x > 0)
-			--removed_index_x;
-		if (index_y < stage.size())
-			++removed_index_y;
+		if (mY > 0)
+			--removed_mY;
+		if (mX < stage.size())
+			++removed_mX;
 		break;
 
 	case DOWN_RIGHT:
-		if (index_x < stage[0].size())
-			++removed_index_x;
-		if (index_y < stage.size())
-			++removed_index_y;
+		if (mY < stage[0].size())
+			++removed_mY;
+		if (mX < stage.size())
+			++removed_mX;
 		break;
 
 	case DOWN_LEFT:
-		if (index_x < stage[0].size())
-			++removed_index_x;
-		if (index_y > 0)
-			--removed_index_y;
+		if (mY < stage[0].size())
+			++removed_mY;
+		if (mX > 0)
+			--removed_mX;
 		break;
 
 	case UP_LEFT:
-		if (index_x > 0)
-			--removed_index_x;
-		if (index_y > 0)
-			--removed_index_y;
+		if (mY > 0)
+			--removed_mY;
+		if (mX > 0)
+			--removed_mX;
 		break;
 
 	default:
@@ -141,64 +154,64 @@ void Agent::remove(int direction, std::vector<std::vector<Trout> > &stage)
 		break;
 	}
 
-	stage[removed_index_x][removed_index_y].set_state(NONE);
+	stage[removed_mY][removed_mX].set_state(NONE);
 
 }
 
 void Agent::deploy(int direction, int color, std::vector<std::vector<Trout> > &stage)
 {
-	int placed_index_x = index_x;
+	int placed_mY = mY;
 
-	int placed_index_y = index_y;
+	int placed_mX = mX;
 
 	switch (direction)
 	{
 	case UP:
-		if (index_x > 0)
-			--placed_index_x;
+		if (mY > 0)
+			--placed_mY;
 		break;
 
 	case DOWN:
-		if (index_x < stage[0].size())
-			++placed_index_x;
+		if (mY < stage[0].size())
+			++placed_mY;
 		break;
 
 	case RIGHT:
-		if (index_y < stage.size())
-			++placed_index_y;
+		if (mX < stage.size())
+			++placed_mX;
 		break;
 
 	case LEFT:
-		if (index_y > 0)
-			--placed_index_y;
+		if (mX > 0)
+			--placed_mX;
 		break;
 
 	case UP_RIGHT:
-		if (index_x > 0)
-			--placed_index_x;
-		if (index_y < stage.size())
-			++placed_index_y;
+		if (mY > 0)
+			--placed_mY;
+		if (mX < stage.size())
+			++placed_mX;
 		break;
 
 	case DOWN_RIGHT:
-		if (index_x < stage[0].size())
-			++placed_index_x;
-		if (index_y < stage.size())
-			++placed_index_y;
+		if (mY < stage[0].size())
+			++placed_mY;
+		if (mX < stage.size())
+			++placed_mX;
 		break;
 
 	case DOWN_LEFT:
-		if (index_x < stage[0].size())
-			++placed_index_x;
-		if (index_y > 0)
-			--placed_index_y;
+		if (mY < stage[0].size())
+			++placed_mY;
+		if (mX > 0)
+			--placed_mX;
 		break;
 
 	case UP_LEFT:
-		if (index_x > 0)
-			--placed_index_x;
-		if (index_y > 0)
-			--placed_index_y;
+		if (mY > 0)
+			--placed_mY;
+		if (mX > 0)
+			--placed_mX;
 		break;
 
 	default:
@@ -209,7 +222,7 @@ void Agent::deploy(int direction, int color, std::vector<std::vector<Trout> > &s
 	if (color != BLUE && color != YELLOW)
 		assert(!"Color isn't right!");
 
-	stage[placed_index_x][placed_index_y].set_state(color);
+	stage[placed_mY][placed_mX].set_state(color);
 
 }
 
