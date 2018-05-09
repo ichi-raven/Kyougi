@@ -15,32 +15,46 @@ constexpr unsigned int TROUT_SIZE = 40;//マス(正方形)一つのサイズ,偶数にしないと
 
 
 
-constexpr unsigned int UP = 1;//右回り
+enum {
+	UP,//右回り
 
-constexpr unsigned int RIGHT = 2;
+	RIGHT,
 
-constexpr unsigned int DOWN = 3;
+	DOWN,
 
-constexpr unsigned int LEFT = 4;
+	LEFT,
 
-constexpr unsigned int UP_RIGHT = 5;
+	UP_RIGHT,
 
-constexpr unsigned int DOWN_RIGHT = 6;
+	DOWN_RIGHT,
 
-constexpr unsigned int DOWN_LEFT = 7;
+	DOWN_LEFT,
 
-constexpr unsigned int UP_LEFT = 8;
+	UP_LEFT,
+};
 
 
+enum
+{
+	NONE,//マスの状態
 
-constexpr unsigned int NONE = 0;//マスの状態
+	BLUE,
 
-constexpr unsigned int BLUE = 1;
+	YELLOW,
 
-constexpr unsigned int YELLOW = 2;
+	INSIDE_B,
 
-constexpr unsigned int INSIDE_B = 3;
+	INSIDE_Y,
 
-constexpr unsigned int INSIDE_Y = 4;
+	INSIDE_BOTH,
 
-constexpr unsigned int INSIDE_BOTH = 5;
+	CHOSEN,//選択されているとき色を変える
+};
+
+
+enum
+{
+	INIT,
+	PLAYING,
+	END,
+};

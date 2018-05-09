@@ -54,14 +54,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ChangeWindowMode(true), DxLib_Init(), SetDrawScreen(DX_SCREEN_BACK), SetGraphMode(800, 480, 16); //ウィンドウモード変更と初期化と裏画面設定と画面サイズ変更
 	
 
-
+	Game game;
 
 									  // while(裏画面を表画面に反映, メッセージ処理, 画面クリア, キー更新)
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && gpUpdateKey() == 0 && Key[KEY_INPUT_ESCAPE] == 0)
 	{
 
 
-
+		game.mainLoop();
 
 		
 

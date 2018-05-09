@@ -8,7 +8,7 @@
 class Trout
 {
 public:
-	Trout();
+	//Trout();
 
 	void set_score(int number);
 

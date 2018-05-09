@@ -15,11 +15,16 @@ public:
 
 	bool check_within(const int X, const int Y, const int COLOR);//再帰関数、上記計算関数内で呼び出す
 
-	void Turn(const int COLOR);
+	void Turn(Agent* AGENT, const int AGENT_IND);//移動、撤去、設置まとめ
 
-	void Draw_update();
+	void Draw_update();//アップデートする場所のみ描画
+
+	void mainLoop();//まとめ
 
 private:
+
+	int mode;//メインループが何をするかの分岐用
+
 	Agent agent_Blue[2];//エージェント二人
 
 	Agent agent_Yellow[2];//同上
@@ -28,6 +33,12 @@ private:
 
 	std::vector<std::vector<bool> > checkstage;//チェック用、主にscore_calcurateでしか使わない
 
-	Draw drawer;//描画処理用
+	Draw renderer;//描画処理用
+
+	int blue_score;//スコア格納
+
+	int yellow_score;//同上
+
+	int turn_num;//過ぎたターン数
 
 };

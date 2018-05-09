@@ -10,13 +10,7 @@ void Trout::set_score(int SCORE)
 
 int Trout::get_score() const
 {
-	if (state == NONE)
-		return 0;
-
-	if(state != INSIDE_B && state != INSIDE_Y && state != INSIDE_BOTH)
 		return score;
-	else
-		return score
 }
 
 void Trout::set_state(int STATE)

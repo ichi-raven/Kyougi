@@ -7,6 +7,7 @@ class Trout;
 
 class Agent
 {
+public:
 	//Agent();
 
 	void set_point(const int X, const int Y);
