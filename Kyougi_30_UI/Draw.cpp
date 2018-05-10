@@ -82,18 +82,19 @@ void Draw::Draw_number(int X, int Y, int NUMBER)
 void Draw::Draw_color(int X, int Y, int COLOR)
 {
 
-	unsigned int color = GetColor(0, 0, 0);
+	int color = GetColor(0, 0, 0);
 
 	if (COLOR == BLUE)
 		color = GetColor(0, 0, 255);
 	else if (COLOR == YELLOW)
 		color = GetColor(255, 255, 0);
 	else if (COLOR == CHOSEN)
-		color = (255, 255, 255);
-	else if (color == NONE)
-		color = (0, 0, 0);
-	//else
-	//	assert(!"Color isn't right!");
+		color = GetColor(255, 255, 255);
+	else if (COLOR == NONE || COLOR == INSIDE_B || COLOR == INSIDE_Y || COLOR == INSIDE_BOTH)
+		color = GetColor(0, 0, 0);
+	else
+		assert(!"Color isn't right!");
+
 
 
 	DrawBox(Point[Y][X].x + 1, Point[Y][X].y + 1, Point[Y][X].x + TROUT_SIZE - 1, Point[Y][X].y + TROUT_SIZE - 1, color, true);

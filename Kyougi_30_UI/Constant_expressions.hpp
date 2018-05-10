@@ -23,6 +23,8 @@ enum {
 	DOWN,
 
 	LEFT,
+
+	STOP,
 };
 
 

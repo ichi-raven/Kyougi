@@ -1,4 +1,4 @@
-#include"Headers_include.hpp"
+ #include"Headers_include.hpp"
 #include"Constant_expressions.hpp"
 
 
@@ -10,7 +10,7 @@ Game::Game()
 
 	
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
 		stage.emplace_back();
 		for (int j = 0; j < 10; ++j)
@@ -28,13 +28,13 @@ Game::Game()
 		}
 
 	agent_Blue[0].set_color(BLUE);
-	agent_Blue[0].set_point(0, 0);
+	agent_Blue[0].set_point(1, 1);
 
 	agent_Blue[1].set_color(BLUE);
-	agent_Blue[1].set_point(5, 0);
+	agent_Blue[1].set_point(5, 1);
 
 	agent_Yellow[0].set_color(YELLOW);
-	agent_Yellow[0].set_point(0, 5);
+	agent_Yellow[0].set_point(1, 5);
 
 	agent_Yellow[1].set_color(YELLOW);
 	agent_Yellow[1].set_point(5, 5);
@@ -198,20 +198,7 @@ void Game::Draw_update()
 	int i = 0, j = 0;
 
 
-	for (const auto S : stage)//ステージの色がある場所描画
-	{
-		
-		for (const auto s : S)
-		{
-			renderer.Draw_color(j, i, s.get_state());
 
-			++j;
-		}
-		++i;
-		j = 0;
-	}
-
-	i = 0, j = 0;
 
 	for (const auto S : stage)//スコア表示
 	{
@@ -228,15 +215,28 @@ void Game::Draw_update()
 		++i;
 		j = 0;
 	}
+	i = 0, j = 0;
 
+	for (const auto S : stage)//ステージの色がある場所描画
+	{
+		
+		for (const auto s : S)
+		{
+			renderer.Draw_color(j, i, s.get_state());
+
+			++j;
+		}
+		++i;
+		j = 0;
+	}
 
 
 
 	for (int i = 0; i < 2; ++i)//エージェント描画
 	{
-		renderer.Draw_Agent(agent_Blue[i].get_xpoint(), agent_Blue[i].get_ypoint(), BLUE);
+		renderer.Draw_Agent(agent_Blue[i].get_xpoint(), agent_Blue[i].get_ypoint(), agent_Blue[i].get_color());
 
-		renderer.Draw_Agent(agent_Yellow[i].get_xpoint(), agent_Yellow[i].get_ypoint(), YELLOW);
+		renderer.Draw_Agent(agent_Yellow[i].get_xpoint(), agent_Yellow[i].get_ypoint(), agent_Yellow[i].get_color());
 	}
 
 
@@ -260,19 +260,19 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 	const auto lmd_checkKey = [&]()->int
 	{
 		
-		if (Key[KEY_INPUT_UP])
+		if (Key[KEY_INPUT_UP] == 1)
 			return UP;
 		
-		if (Key[KEY_INPUT_DOWN])
+		if (Key[KEY_INPUT_DOWN] == 1)
 			return DOWN;
 
-		if (Key[KEY_INPUT_RIGHT])
+		if (Key[KEY_INPUT_RIGHT] == 1)
 			return RIGHT;
 
-		if (Key[KEY_INPUT_LEFT])
+		if (Key[KEY_INPUT_LEFT] == 1)
 			return LEFT;
 
-		return 0;
+		return STOP;
 		
 	};
 
@@ -292,26 +292,40 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 	switch (lmd_checkKey())
 	{
 	case UP:
-		move_y = -1;
+		--move_x;
 		break;
 
 	case DOWN:
-		move_y = 1;
+		++move_x;
 		break;
 
 	case LEFT:
-		move_x = -1;
+		--move_y;
 		break;
 
 	case RIGHT:
-		move_x = 1;
+		++move_y;
 		break;
 
+	case STOP:
+		break;
 	
 	default:
 		assert(!"ERROR!");
 		break;
 	}
+
+	//printfDx("%d,%d\n", move_x + x_now, move_y + y_now);
+
+	if (move_y < 0)
+		move_y = -1;
+	if (move_y > 0)
+		move_y = 1;
+
+	if (move_x < 0)
+		move_x = -1;
+	if (move_x > 0)
+		move_x = 1;
 
 	if (x_now + move_x < 0 || x_now + move_x >= stage[0].size())
 	{
@@ -322,30 +336,35 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 		move_y = 0;
 	}
 
-	printfDx("%d,%d\n", move_x + x_now, move_y + y_now);
 
 
 	renderer.Draw_color(x_now + move_x, y_now + move_y, CHOSEN);
 
 	
-	if (Key[KEY_INPUT_M])
+	if (Key[KEY_INPUT_M] == 1)
 	{
-		agent_now->move(x_now + move_x, y_now + move_y, stage);
+		agent_now[AGENT_IND].move(x_now + move_x, y_now + move_y, stage);
 		inputting++;
+		move_x = 0;
+		move_y = 0;
 		return;
 		
 	}
-	else if (Key[KEY_INPUT_R])
+	else if (Key[KEY_INPUT_R] == 1 && stage[x_now + move_x][y_now + move_y].get_state())
 	{
-		agent_now->remove(x_now + move_x, y_now + move_y, stage);
+		agent_now[AGENT_IND].remove(x_now + move_x, y_now + move_y, stage);
 		inputting++;
+		move_x = 0;
+		move_y = 0;
 		return;
 		
 	}
-	else if (Key[KEY_INPUT_S])
+	else if (Key[KEY_INPUT_S] == 1)
 	{
-		agent_now->deploy(x_now + move_x, y_now + move_y, agent_now[AGENT_IND].get_color(), stage);
+		agent_now[AGENT_IND].deploy(x_now + move_x, y_now + move_y, agent_now[AGENT_IND].get_color(), stage);
 		inputting++;
+		move_x = 0;
+		move_y = 0;
 		return;
 	}
 
@@ -366,8 +385,9 @@ void Game::mainLoop()
 		break;
 
 	case PLAYING:
+		this->Draw_update();//更新
 		
-		
+		printfDx("%d\n", inputting);
 		switch (inputting)
 		{
 		case 0:
@@ -387,10 +407,10 @@ void Game::mainLoop()
 			break;
 
 		case 4://入力終了
-			this->score_calcurate(BLUE);//なんかに入力して表示
-			this->score_calcurate(YELLOW);
+			//this->score_calcurate(BLUE);//なんかに入力して表示
+			//this->score_calcurate(YELLOW);
 
-			
+			inputting = 0;
 
 			++turn_num;
 			//設定したターン数を過ぎたらmodeをENDに
@@ -402,7 +422,6 @@ void Game::mainLoop()
 		}
 
 		
-		this->Draw_update();//更新
 		
 
 		break;
