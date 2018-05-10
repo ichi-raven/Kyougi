@@ -23,14 +23,6 @@ enum {
 	DOWN,
 
 	LEFT,
-
-	UP_RIGHT,
-
-	DOWN_RIGHT,
-
-	DOWN_LEFT,
-
-	UP_LEFT,
 };
 
 
@@ -58,3 +50,6 @@ enum
 	PLAYING,
 	END,
 };
+
+
+extern int Key[256];

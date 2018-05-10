@@ -29,7 +29,7 @@ public:
 
 private:
 
-	std::vector<std::vector<vec2> > Point;//ここでしか使わない表示用座標
+	std::vector<std::vector<vec2> > Point;//ここでしか使わない表示用座標,各マスの左上座標を格納している
 
 
 };

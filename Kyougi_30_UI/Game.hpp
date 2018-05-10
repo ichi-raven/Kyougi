@@ -41,4 +41,6 @@ private:
 
 	int turn_num;//過ぎたターン数
 
+	int inputting;//今入力しているエージェント
+
 };
