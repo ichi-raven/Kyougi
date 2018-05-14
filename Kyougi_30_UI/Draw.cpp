@@ -4,9 +4,9 @@
 
 void Draw::set_coodinate(const int R_NUM, const int C_NUM)
 {
-	Point.clear();//‰Šú‰»
+	Point.clear();//åˆæœŸåŒ–
 
-	for (int i = 0; i < R_NUM; ++i)//¶ã‹N“_‚ÅŒ³À•Wì¬
+	for (int i = 0; i < R_NUM; ++i)//å·¦ä¸Šèµ·ç‚¹ã§å…ƒåº§æ¨™ä½œæˆ
 	{
 		Point.emplace_back();
 		for (int j = 0; j < C_NUM; ++j)
@@ -18,7 +18,7 @@ void Draw::set_coodinate(const int R_NUM, const int C_NUM)
 	}
 
 
-	int diff_r = X_MIN + (X_MAX / 2) - (TROUT_SIZE * R_NUM / 2);//ğŒ‚É‰‚¶‚Ä‘ã“ü
+	int diff_r = X_MIN + (X_MAX / 2) - (TROUT_SIZE * R_NUM / 2);//æ¡ä»¶ã«å¿œã˜ã¦ä»£å…¥
 	int diff_c = Y_MIN + (Y_MAX / 2) - (TROUT_SIZE * C_NUM / 2);
 
 	if (C_NUM % 2)
@@ -89,8 +89,14 @@ void Draw::Draw_color(const int R, const int C, int COLOR)
 		color = GetColor(255, 255, 0);
 	else if (COLOR == CHOSEN)
 		color = GetColor(255, 255, 255);
-	else if (COLOR == NONE || COLOR == INSIDE_B || COLOR == INSIDE_Y || COLOR == INSIDE_BOTH)
+	else if (COLOR == NONE)
 		color = GetColor(0, 0, 0);
+	else if(COLOR == INSIDE_BLUE)
+		color = GetColor(0, 0, 70);
+	else if(COLOR == INSIDE_YELLOW)
+		color = GetColor(70, 70, 0);
+	else if(COLOR == INSIDE_BOTH)
+		color = GetColor(70, 70, 70);
 	else
 		assert(!"Color isn't right!");
 
