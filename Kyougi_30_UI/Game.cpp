@@ -74,12 +74,12 @@ void Game::make_stage()
 }
 
 
-int Game::score_calcurate(const int COLOR)//F‚ğ“n‚·‚Æ‚»‚ÌF‚Ì“_”‚ğ•Ô‚·
+int Game::score_calcurate(const int COLOR)//è‰²ã‚’æ¸¡ã™ã¨ãã®è‰²ã®ç‚¹æ•°ã‚’è¿”ã™
 {
 	
 	checkstage.clear();
 
-	for (auto &S : stage)//checkstageì¬
+	for (auto &S : stage)//checkstageä½œæˆ
 	{
 		checkstage.emplace_back();
 
@@ -96,7 +96,7 @@ int Game::score_calcurate(const int COLOR)//F‚ğ“n‚·‚Æ‚»‚ÌF‚Ì“_”‚ğ•Ô‚·
 			
 	int r = 0, c = 0;
 
-	for (auto i = checkstage.begin(); i < checkstage.end(); ++i)//©g‚ÌF‚¶‚á‚È‚¢–¢’Tõƒ}ƒX’T‚µ‚Ä’TõŠJn
+	for (auto i = checkstage.begin(); i < checkstage.end(); ++i)//è‡ªèº«ã®è‰²ã˜ã‚ƒãªã„æœªæ¢ç´¢ãƒã‚¹æ¢ã—ã¦æ¢ç´¢é–‹å§‹
 	{
 		const int index_R = i - checkstage.begin();
 
@@ -105,8 +105,8 @@ int Game::score_calcurate(const int COLOR)//F‚ğ“n‚·‚Æ‚»‚ÌF‚Ì“_”‚ğ•Ô‚·
 			const int index_C = j - checkstage[index_R].begin();
 
 
-			if (check_within(index_R, index_C, COLOR))//ˆÍ‚Ü‚ê‚½ƒ}ƒX
-			{
+			if (ï¼check_within(index_R, index_C, COLOR))//å›²ã¾ã‚ŒãŸãƒã‚¹
+			        continue;
 				
 				for (auto &S : stage)
 				{
@@ -136,14 +136,14 @@ int Game::score_calcurate(const int COLOR)//F‚ğ“n‚·‚Æ‚»‚ÌF‚Ì“_”‚ğ•Ô‚·
 					++r;
 					c = 0;
 				}
-			}
+
 
 			
 		}
 	}
 		
 	
-	//‚±‚±‚©‚çƒXƒRƒAŒvZ
+	//ã“ã“ã‹ã‚‰ã‚¹ã‚³ã‚¢è¨ˆç®—
 
 	int score = 0;
 
@@ -176,56 +176,39 @@ bool Game::check_within(const int R, const int C, const int COLOR)
 			return true;
 	};
 
-	if (!lmd_isRightPoint(R, C))//•Ç‚ÉÚ‚µ‚Ä‚¢‚½‚ç
+	if (!lmd_isRightPoint(R, C))//å£ã«æ¥ã—ã¦ã„ãŸã‚‰
 		return false;
 
-	if (stage[R][C].get_state() == COLOR || !checkstage[R][C])//©g‚ÌF‚Ìƒ}ƒX‚à‚µ‚­‚Í‚·‚Å‚É—ˆ‚½ƒ}ƒX‚È‚ç
+	if (stage[R][C].get_state() == COLOR || !checkstage[R][C])//è‡ªèº«ã®è‰²ã®ãƒã‚¹ã‚‚ã—ãã¯ã™ã§ã«æ¥ãŸãƒã‚¹ãªã‚‰
 		return true;
 
 
 
-	checkstage[R][C] = false;//‚·‚Å‚É—ˆ‚½êŠ‚Æ‚¢‚¤‚±‚Æ‚Åƒ`ƒFƒbƒN“ü‚ê‚é
+	checkstage[R][C] = false;//ã™ã§ã«æ¥ãŸå ´æ‰€ã¨ã„ã†ã“ã¨ã§ãƒã‚§ãƒƒã‚¯å…¥ã‚Œã‚‹
 
 
-	if (lmd_isRightPoint(R - 1, C) & checkstage[R - 1][C])//ã‚ª©F‚Ìƒ}ƒX‚à‚µ‚­‚Í‚·‚Å‚É—ˆ‚½êŠ‚¶‚á‚È‚©‚Á‚½‚ç
+	if (lmd_isRightPoint(R - 1, C) & checkstage[R - 1][C])//ä¸ŠãŒè‡ªè‰²ã®ãƒã‚¹ã‚‚ã—ãã¯ã™ã§ã«æ¥ãŸå ´æ‰€ã˜ã‚ƒãªã‹ã£ãŸã‚‰
 	{
-		if (!check_within(R - 1, C, COLOR))//ã‚É‚Â‚¢‚Ä“¯‚¶‚æ‚¤‚É’²‚×‚é
+		if (!check_within(R - 1, C, COLOR))//ä¸Šã«ã¤ã„ã¦åŒã˜ã‚ˆã†ã«èª¿ã¹ã‚‹
 	   		return false;
 	}
-	if (lmd_isRightPoint(R + 1, C) & checkstage[R + 1][C])//‰º‚ª“¯ã
+	if (lmd_isRightPoint(R + 1, C) & checkstage[R + 1][C])//ä¸‹ãŒåŒä¸Š
 	{
-		if (!check_within(R, C + 1, COLOR))//‰º‚É‚Â‚¢‚Ä’²‚×‚é
+		if (!check_within(R, C + 1, COLOR))//ä¸‹ã«ã¤ã„ã¦èª¿ã¹ã‚‹
 			return false;
 	}
-	if (lmd_isRightPoint(R, C + 1) & checkstage[R][C + 1])//‰E‚ª“¯ã
+	if (lmd_isRightPoint(R, C + 1) & checkstage[R][C + 1])//å³ãŒåŒä¸Š
 	{
-		if (!check_within(R - 1, C, COLOR))//‰E‚É‚Â‚¢‚Ä’²‚×‚é
+		if (!check_within(R - 1, C, COLOR))//å³ã«ã¤ã„ã¦èª¿ã¹ã‚‹
 			return false;
 	}
-	if (lmd_isRightPoint(R, C - 1) & checkstage[R][C - 1])//¶‚ª“¯ã
+	if (lmd_isRightPoint(R, C - 1) & checkstage[R][C - 1])//å·¦ãŒåŒä¸Š
 	{
-		if (!check_within(R + 1, C, COLOR))//¶‚É‚Â‚¢‚Ä’²‚×‚é
+		if (!check_within(R + 1, C, COLOR))//å·¦ã«ã¤ã„ã¦èª¿ã¹ã‚‹
 			return false;
 	}
 
-	//‚±‚±‚©‚ç‰º‚É—ˆ‚ê‚é‚Æ‚¢‚¤‚±‚Æ‚Íl‹÷‚ª•Ç‚¶‚á‚È‚¢‚Ü‚Ü‹l‚Ü‚Á‚½ƒ}ƒX = ˆÍ‚Ü‚ê‚Ä‚¢‚é
-
-	if (COLOR == BLUE)
-	{
-		if(stage[R][C].get_state() == INSIDE_Y)
-			stage[R][C].set_state(INSIDE_BOTH);
-		else
-			stage[R][C].set_state(INSIDE_B);
-	
-	}
-	else if (COLOR == YELLOW)
-	{
-		if (stage[R][C].get_state() == INSIDE_B)
-			stage[R][C].set_state(INSIDE_BOTH);
-		else
-			stage[R][C].set_state(INSIDE_Y);
-	}
-
+	//ã“ã“ã‹ã‚‰ä¸‹ã«æ¥ã‚Œã‚‹ã¨ã„ã†ã“ã¨ã¯å››éš…ãŒå£ã˜ã‚ƒãªã„ã¾ã¾è©°ã¾ã£ãŸãƒã‚¹ = å›²ã¾ã‚Œã¦ã„ã‚‹
 
 	return true;
 	
@@ -237,13 +220,13 @@ bool Game::check_within(const int R, const int C, const int COLOR)
 
 void Game::Draw_update()
 {
-	renderer.Draw_line();//ƒXƒe[ƒW‚Ìü•`‰æ
+	renderer.Draw_line();//ã‚¹ãƒ†ãƒ¼ã‚¸ã®ç·šæç”»
 
 	int r = 0, c = 0;
 
 
 
-	for (const auto S : stage)//ƒXƒe[ƒW‚ÌF‚ª‚ ‚éêŠ•`‰æ
+	for (const auto S : stage)//ã‚¹ãƒ†ãƒ¼ã‚¸ã®è‰²ãŒã‚ã‚‹å ´æ‰€æç”»
 	{
 		
 		for (const auto s : S)
@@ -259,7 +242,7 @@ void Game::Draw_update()
 
 
 
-	for (int i = 0; i < 2; ++i)//ƒG[ƒWƒFƒ“ƒg•`‰æ
+	for (int i = 0; i < 2; ++i)//ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆæç”»
 	{
 		renderer.Draw_Agent(agent_Blue[i].get_raw_point(), agent_Blue[i].get_col_point(), agent_Blue[i].get_color());
 
@@ -274,7 +257,7 @@ void Game::Draw_update()
 	
 
 
-	//ƒXƒRƒAÀ‘•		
+	//ã‚¹ã‚³ã‚¢å®Ÿè£…		
 
 
 
@@ -423,7 +406,7 @@ void Game::mainLoop()
 		break;
 
 	case PLAYING:
-		this->Draw_update();//XV
+		this->Draw_update();//æ›´æ–°
 		
 		
 		switch (inputting)
@@ -444,15 +427,15 @@ void Game::mainLoop()
 			this->Turn(agent_Yellow, 1);
 			break;
 
-		case 4://“ü—ÍI—¹
-			printfDx("%d\n", this->score_calcurate(BLUE) );//‚È‚ñ‚©‚É“ü—Í‚µ‚Ä•\¦
+		case 4://å…¥åŠ›çµ‚äº†
+			printfDx("%d\n", this->score_calcurate(BLUE) );//ãªã‚“ã‹ã«å…¥åŠ›ã—ã¦è¡¨ç¤º
 			printfDx("%d\n", this->score_calcurate(YELLOW) );
 
 
 			inputting = 0;
 
 			++turn_num;
-			//İ’è‚µ‚½ƒ^[ƒ“”‚ğ‰ß‚¬‚½‚çmode‚ğEND‚É
+			//è¨­å®šã—ãŸã‚¿ãƒ¼ãƒ³æ•°ã‚’éããŸã‚‰modeã‚’ENDã«
 			break;
 
 		default:
@@ -465,7 +448,7 @@ void Game::mainLoop()
 
 		break;
 
-	case END://ƒXƒRƒA‚Æ‚©•\¦‚µ‚ÄƒŠƒgƒ‰ƒC
+	case END://ã‚¹ã‚³ã‚¢ã¨ã‹è¡¨ç¤ºã—ã¦ãƒªãƒˆãƒ©ã‚¤
 		break;
 
 	default:
