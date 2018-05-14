@@ -31,13 +31,13 @@ Game::Game()
 	agent_Blue[0].set_point(1, 1);
 
 	agent_Blue[1].set_color(BLUE);
-	agent_Blue[1].set_point(5, 1);
+	agent_Blue[1].set_point(3, 1);
 
 	agent_Yellow[0].set_color(YELLOW);
-	agent_Yellow[0].set_point(1, 5);
+	agent_Yellow[0].set_point(1, 3);
 
 	agent_Yellow[1].set_color(YELLOW);
-	agent_Yellow[1].set_point(5, 5);
+	agent_Yellow[1].set_point(3, 3);
 
 	mode = INIT;
 
@@ -77,6 +77,8 @@ void Game::make_stage()
 int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 {
 	
+	checkstage.clear();
+
 	for (auto &S : stage)//checkstage作成
 	{
 		checkstage.emplace_back();
@@ -92,6 +94,8 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 		}
 	}
 			
+	int r = 0, c = 0;
+
 	for (auto i = checkstage.begin(); i < checkstage.end(); ++i)//自身の色じゃない未探索マス探して探索開始
 	{
 		const int index_R = i - checkstage.begin();
@@ -100,14 +104,45 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 		{
 			const int index_C = j - checkstage[index_R].begin();
 
-			if (checkstage[index_R][index_C])
-			{
-				check_within(index_R, index_C, COLOR);
 
+			if (check_within(index_R, index_C, COLOR))//囲まれたマス
+			{
+				
+				for (auto &S : stage)
+				{
+					for (auto &s : S)
+					{
+						if (checkstage[r][c])
+							continue;
+
+						if (COLOR == BLUE)
+						{
+							if (s.get_state() == INSIDE_Y)
+								s.set_state(INSIDE_BOTH);
+							else
+								s.set_state(INSIDE_B);
+
+						}
+						else if (COLOR == YELLOW)
+						{
+							if (s.get_state() == INSIDE_B)
+								s.set_state(INSIDE_BOTH);
+							else
+								s.set_state(INSIDE_Y);
+						}
+
+						++c;
+					}
+					++r;
+					c = 0;
+				}
 			}
+
+			
 		}
 	}
 		
+	
 	//ここからスコア計算
 
 	int score = 0;
@@ -115,7 +150,10 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 	for(const auto S : stage)
 		for (const auto s : S)
 		{
-			score += s.get_score();
+			if (s.get_state() == COLOR)
+				score += s.get_score();
+			else if (s.get_state() == INSIDE_B || s.get_state() == INSIDE_Y || s.get_state() == INSIDE_BOTH)
+				score += abs(s.get_score());
 		}
 
 	return score;
@@ -132,36 +170,41 @@ bool Game::check_within(const int R, const int C, const int COLOR)
 {
 	const auto lmd_isRightPoint = [&](int _R, int _C)->bool
 	{
-		if (_R <= 0 || _R >= stage.size() || _C <= 0 || _C >= stage[0].size())
+		if (_R <= 0 || _R >= stage.size() - 1 || _C <= 0 || _C >= stage[0].size() - 1)
 			return false;
 		else 
 			return true;
 	};
 
-
-	if (lmd_isRightPoint(R, C) && !checkstage[R][C])//壁に接していて自色のマスじゃなかったら
+	if (!lmd_isRightPoint(R, C))//壁に接していたら
 		return false;
+
+	if (stage[R][C].get_state() == COLOR || !checkstage[R][C])//自身の色のマスもしくはすでに来たマスなら
+		return true;
+
+
 
 	checkstage[R][C] = false;//すでに来た場所ということでチェック入れる
 
-	if (checkstage[R - 1][C] && lmd_isRightPoint(R - 1, C))//上が自色のマスもしくはすでに来た場所じゃなかったら
+
+	if (lmd_isRightPoint(R - 1, C) & checkstage[R - 1][C])//上が自色のマスもしくはすでに来た場所じゃなかったら
 	{
 		if (!check_within(R - 1, C, COLOR))//上について同じように調べる
 	   		return false;
 	}
-	if (checkstage[R + 1][C] && lmd_isRightPoint(R + 1, C))//下が同上
+	if (lmd_isRightPoint(R + 1, C) & checkstage[R + 1][C])//下が同上
 	{
 		if (!check_within(R, C + 1, COLOR))//下について調べる
 			return false;
 	}
-	if (checkstage[R][C + 1] && lmd_isRightPoint(R, C + 1))//右が同上
+	if (lmd_isRightPoint(R, C + 1) & checkstage[R][C + 1])//右が同上
 	{
 		if (!check_within(R - 1, C, COLOR))//右について調べる
 			return false;
 	}
-	if (checkstage[R][C - 1] && lmd_isRightPoint(R, C - 1))//左が同上
+	if (lmd_isRightPoint(R, C - 1) & checkstage[R][C - 1])//左が同上
 	{
-		if (!check_within(R+ 1, C, COLOR))//左について調べる
+		if (!check_within(R + 1, C, COLOR))//左について調べる
 			return false;
 	}
 
@@ -173,7 +216,7 @@ bool Game::check_within(const int R, const int C, const int COLOR)
 			stage[R][C].set_state(INSIDE_BOTH);
 		else
 			stage[R][C].set_state(INSIDE_B);
-
+	
 	}
 	else if (COLOR == YELLOW)
 	{
@@ -277,7 +320,7 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 	 
 	static int move_c = 0;
 
-	printfDx("an, %d : %d\n", another_r_now, another_c_now);
+	//printfDx("an, %d : %d\n", another_r_now, another_c_now);
 
 	switch (lmd_checkKey())
 	{
@@ -402,8 +445,9 @@ void Game::mainLoop()
 			break;
 
 		case 4://入力終了
-			this->score_calcurate(BLUE);//なんかに入力して表示
-			this->score_calcurate(YELLOW);
+			printfDx("%d\n", this->score_calcurate(BLUE) );//なんかに入力して表示
+			printfDx("%d\n", this->score_calcurate(YELLOW) );
+
 
 			inputting = 0;
 
