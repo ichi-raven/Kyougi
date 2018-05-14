@@ -22,7 +22,7 @@ private:
 
 	int score;//マスに書かれるであろう数値
 
-	int state;//状態、constexprで指定する	
+	int state;//状態、constexpxで指定する	
 
 
 };

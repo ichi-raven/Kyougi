@@ -14,18 +14,18 @@ class Draw
 public:
 
 	//Draw();
-
-	void set_coodinate(const int X_NUM, const int Y_NUM);//座標等の設定
+	
+	void set_coodinate(const int R_NUM, const int C_NUM);//座標等の設定
 
 	void Draw_line();//枠描画
 
-	void Draw_number(const int X, const int Y, const int NUMBER);//数値描画
+	void Draw_number(const int R, const int C, const int number);//数値描画
 
-	void Draw_color(const int X, const int Y, const int COLOR);//色描画
+	void Draw_color(const int R, const int C, const int COLOR);//色描画
 
-	//void Draw_score(const int SCORE);//スコアを右上にでも描画
+	//void Draw_score(const int score);//スコアを右上にでも描画
 
-	void Draw_Agent(const int X, const int Y, const int COLOR);//エージェント描画
+	void Draw_Agent(const int R, const int C, const int COLOR);//エージェント描画
 
 private:
 

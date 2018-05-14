@@ -13,7 +13,7 @@ public:
 
 	int score_calcurate(const int COLOR);//計算まとめ
 
-	bool check_within(const int X, const int Y, const int COLOR);//再帰関数、上記計算関数内で呼び出す
+	bool check_within(const int R, const int C, const int COLOx);//再帰関数、上記計算関数内で呼び出す
 
 	void Turn(Agent* AGENT, const int AGENT_IND);//移動、撤去、設置まとめ
 

@@ -8,7 +8,7 @@
 Game::Game()
 {
 
-	
+
 
 	for (int i = 0; i < 8; ++i)
 	{
@@ -20,7 +20,7 @@ Game::Game()
 	}
 
 
-	for(auto &S: stage)
+	for (auto &S : stage)
 		for (auto &s : S)
 		{
 			s.set_state(NONE);
@@ -42,30 +42,31 @@ Game::Game()
 	mode = INIT;
 
 	inputting = 0;
+
 }
 
 void Game::make_stage()
 {
 
-	renderer.set_coodinate(stage[0].size(), stage.size());
+	renderer.set_coodinate(stage.size(), stage[0].size());
 
 	renderer.Draw_line();
 
-	int i = 0, j = 0;
+	int r = 0, c = 0;
 	for (const auto S : stage)
 	{
 		for (const auto s : S)
 		{
 	
 
-			renderer.Draw_number(j, i, stage[i][j].get_score());
+			renderer.Draw_number(r, c, stage[r][c].get_score());
 
 			
-			++j;
+			++c;
 		}
 		
-		++i;
-		j = 0;
+		++r;
+		c = 0;
 	}
 
 	
@@ -101,7 +102,7 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 
 			if (checkstage[index_R][index_C])
 			{
-				check_within(index_C, index_R, COLOR);
+				check_within(index_R, index_C, COLOR);
 
 			}
 		}
@@ -127,40 +128,40 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 
 
 
-bool Game::check_within(const int X, const int Y, const int COLOR)
+bool Game::check_within(const int R, const int C, const int COLOR)
 {
-	const auto lmd_isRightPoint = [&](int _X, int _Y)->bool
+	const auto lmd_isRightPoint = [&](int _R, int _C)->bool
 	{
-		if (_Y <= 0 || _Y >= stage.size() || _X <= 0 || _X >= stage[0].size())
+		if (_R <= 0 || _R >= stage.size() || _C <= 0 || _C >= stage[0].size())
 			return false;
 		else 
 			return true;
 	};
 
 
-	if (lmd_isRightPoint(X, Y) && !checkstage[Y][X])//壁に接していて自色のマスじゃなかったら
+	if (lmd_isRightPoint(R, C) && !checkstage[R][C])//壁に接していて自色のマスじゃなかったら
 		return false;
 
-	checkstage[Y][X] = false;//すでに来た場所ということでチェック入れる
+	checkstage[R][C] = false;//すでに来た場所ということでチェック入れる
 
-	if (checkstage[Y - 1][X] && lmd_isRightPoint(X, Y - 1))//上が自色のマスもしくはすでに来た場所じゃなかったら
+	if (checkstage[R - 1][C] && lmd_isRightPoint(R - 1, C))//上が自色のマスもしくはすでに来た場所じゃなかったら
 	{
-		if (!check_within(X, Y - 1, COLOR))//上について同じように調べる
+		if (!check_within(R - 1, C, COLOR))//上について同じように調べる
 	   		return false;
 	}
-	if (checkstage[Y + 1][X] && lmd_isRightPoint(X, Y + 1))//下が同上
+	if (checkstage[R + 1][C] && lmd_isRightPoint(R + 1, C))//下が同上
 	{
-		if (!check_within(X, Y + 1, COLOR))//下について調べる
+		if (!check_within(R, C + 1, COLOR))//下について調べる
 			return false;
 	}
-	if (checkstage[Y][X + 1] && lmd_isRightPoint(X + 1, Y))//右が同上
+	if (checkstage[R][C + 1] && lmd_isRightPoint(R, C + 1))//右が同上
 	{
-		if (!check_within(X - 1, Y, COLOR))//右について調べる
+		if (!check_within(R - 1, C, COLOR))//右について調べる
 			return false;
 	}
-	if (checkstage[Y][X - 1] && lmd_isRightPoint(X - 1, Y))//左が同上
+	if (checkstage[R][C - 1] && lmd_isRightPoint(R, C - 1))//左が同上
 	{
-		if (!check_within(X + 1, Y, COLOR))//左について調べる
+		if (!check_within(R+ 1, C, COLOR))//左について調べる
 			return false;
 	}
 
@@ -168,18 +169,18 @@ bool Game::check_within(const int X, const int Y, const int COLOR)
 
 	if (COLOR == BLUE)
 	{
-		if(stage[Y][X].get_state() == INSIDE_Y)
-			stage[Y][X].set_state(INSIDE_BOTH);
+		if(stage[R][C].get_state() == INSIDE_Y)
+			stage[R][C].set_state(INSIDE_BOTH);
 		else
-			stage[Y][X].set_state(INSIDE_B);
+			stage[R][C].set_state(INSIDE_B);
 
 	}
 	else if (COLOR == YELLOW)
 	{
-		if (stage[Y][X].get_state() == INSIDE_B)
-			stage[Y][X].set_state(INSIDE_BOTH);
+		if (stage[R][C].get_state() == INSIDE_B)
+			stage[R][C].set_state(INSIDE_BOTH);
 		else
-			stage[Y][X].set_state(INSIDE_Y);
+			stage[R][C].set_state(INSIDE_Y);
 	}
 
 
@@ -195,48 +196,31 @@ void Game::Draw_update()
 {
 	renderer.Draw_line();//ステージの線描画
 
-	int i = 0, j = 0;
+	int r = 0, c = 0;
 
 
-
-
-	for (const auto S : stage)//スコア表示
-	{
-		for (const auto s : S)
-		{
-
-
-			renderer.Draw_number(j, i, stage[i][j].get_score());
-
-
-			++j;
-		}
-
-		++i;
-		j = 0;
-	}
-	i = 0, j = 0;
 
 	for (const auto S : stage)//ステージの色がある場所描画
 	{
 		
 		for (const auto s : S)
 		{
-			renderer.Draw_color(j, i, s.get_state());
+			renderer.Draw_color(r, c, s.get_state());
+			renderer.Draw_number(r, c, stage[r][c].get_score());
 
-			++j;
+			++c;
 		}
-		++i;
-		j = 0;
+		++r;
+		c = 0;
 	}
 
 
 
 	for (int i = 0; i < 2; ++i)//エージェント描画
 	{
-		renderer.Draw_Agent(agent_Blue[i].get_xpoint(), agent_Blue[i].get_ypoint(), agent_Blue[i].get_color());
+		renderer.Draw_Agent(agent_Blue[i].get_raw_point(), agent_Blue[i].get_col_point(), agent_Blue[i].get_color());
 
-		renderer.Draw_Agent(agent_Yellow[i].get_xpoint(), agent_Yellow[i].get_ypoint(), agent_Yellow[i].get_color());
+		renderer.Draw_Agent(agent_Yellow[i].get_raw_point(), agent_Yellow[i].get_col_point(), agent_Yellow[i].get_color());
 	}
 
 
@@ -278,33 +262,39 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 
 
 	Agent* agent_now = AGENT;
+
+	const int enemy_color = (agent_now[AGENT_IND].get_color() == BLUE ? YELLOW : BLUE);
 	
-	const int x_now = agent_now[AGENT_IND].get_xpoint();
+	const int r_now = agent_now[AGENT_IND].get_raw_point();
 
-	const int y_now = agent_now[AGENT_IND].get_ypoint();
+	const int c_now = agent_now[AGENT_IND].get_col_point();
 
-	static int move_x = 0;
+	const int another_r_now = agent_now[(AGENT_IND - 1) * -1].get_raw_point();
+
+	const int another_c_now = agent_now[(AGENT_IND - 1) * -1].get_col_point();
+
+	static int move_r = 0;
 	 
-	static int move_y = 0;
+	static int move_c = 0;
 
-
+	printfDx("an, %d : %d\n", another_r_now, another_c_now);
 
 	switch (lmd_checkKey())
 	{
 	case UP:
-		--move_x;
+		--move_r;
 		break;
 
 	case DOWN:
-		++move_x;
+		++move_r;
 		break;
 
 	case LEFT:
-		--move_y;
+		--move_c;
 		break;
 
 	case RIGHT:
-		++move_y;
+		++move_c;
 		break;
 
 	case STOP:
@@ -315,56 +305,58 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 		break;
 	}
 
-	//printfDx("%d,%d\n", move_x + x_now, move_y + y_now);
+	//printfDx("%d,%d\n", move_x + r_now, move_c + c_now);
 
-	if (move_y < 0)
-		move_y = -1;
-	if (move_y > 0)
-		move_y = 1;
+	if (move_r < 0)
+		move_r = -1;
+	if (move_r > 0)
+		move_r = 1;
 
-	if (move_x < 0)
-		move_x = -1;
-	if (move_x > 0)
-		move_x = 1;
+	if (move_c < 0)
+		move_c = -1;
+	if (move_c > 0)
+		move_c = 1;
 
-	if (x_now + move_x < 0 || x_now + move_x >= stage[0].size())
+	if (c_now + move_c < 0 || c_now + move_c >= stage[0].size())
 	{
-		move_x = 0;
+		move_c = 0;
 	}
-	if (y_now + move_y < 0 || y_now + move_y >= stage.size())
+	if (r_now + move_r < 0 || r_now + move_r >= stage.size())
 	{
-		move_y = 0;
+		move_r = 0;
 	}
 
 
 
-	renderer.Draw_color(x_now + move_x, y_now + move_y, CHOSEN);
+	renderer.Draw_color(r_now + move_r, c_now + move_c, CHOSEN);
+
+	const int state_trout_now = stage[r_now + move_r][c_now + move_c].get_state();
 
 	
-	if (Key[KEY_INPUT_M] == 1)
+	if (Key[KEY_INPUT_M] == 1 && state_trout_now != enemy_color && !(another_r_now == r_now + move_r && another_c_now == c_now + move_c))
 	{
-		agent_now[AGENT_IND].move(x_now + move_x, y_now + move_y, stage);
+		agent_now[AGENT_IND].move(r_now + move_r, c_now + move_c, stage);
 		inputting++;
-		move_x = 0;
-		move_y = 0;
+		move_r = 0;
+		move_c = 0;
 		return;
 		
 	}
-	else if (Key[KEY_INPUT_R] == 1 && stage[x_now + move_x][y_now + move_y].get_state())
+	else if (Key[KEY_INPUT_R] == 1 && state_trout_now == enemy_color)
 	{
-		agent_now[AGENT_IND].remove(x_now + move_x, y_now + move_y, stage);
+		agent_now[AGENT_IND].remove(r_now + move_r, c_now + move_c, stage);
 		inputting++;
-		move_x = 0;
-		move_y = 0;
+		move_r = 0;
+		move_c = 0;
 		return;
 		
 	}
-	else if (Key[KEY_INPUT_S] == 1)
+	else if (Key[KEY_INPUT_D] == 1 && state_trout_now != BLUE && state_trout_now != YELLOW)
 	{
-		agent_now[AGENT_IND].deploy(x_now + move_x, y_now + move_y, agent_now[AGENT_IND].get_color(), stage);
+		agent_now[AGENT_IND].deploy(r_now + move_r, c_now + move_c, agent_now[AGENT_IND].get_color(), stage);
 		inputting++;
-		move_x = 0;
-		move_y = 0;
+		move_r = 0;
+		move_c = 0;
 		return;
 	}
 
@@ -382,12 +374,15 @@ void Game::mainLoop()
 		this->make_stage();
 		
 		mode = PLAYING;
+
+		//assert(!"Came");
+	
 		break;
 
 	case PLAYING:
 		this->Draw_update();//更新
 		
-		printfDx("%d\n", inputting);
+		
 		switch (inputting)
 		{
 		case 0:
@@ -407,8 +402,8 @@ void Game::mainLoop()
 			break;
 
 		case 4://入力終了
-			//this->score_calcurate(BLUE);//なんかに入力して表示
-			//this->score_calcurate(YELLOW);
+			this->score_calcurate(BLUE);//なんかに入力して表示
+			this->score_calcurate(YELLOW);
 
 			inputting = 0;
 

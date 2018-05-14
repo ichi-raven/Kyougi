@@ -26,18 +26,18 @@ int gpUpdateKey()
 
 
 
-int get_Rand(int min, int max)//指定した値の範囲の整数乱数を出力する関数
+int get_rand(int min, int max)//指定した値の範囲の整数乱数を出力する関数
 {
 	// 乱数生成器, パフォーマンス考えてstatic
 
 
-	static std::random_device seed_generator;
-	static std::default_random_engine random_engine(seed_generator());
+	static std::random_device seed_genexatox;
+	static std::default_random_engine xandom_engine(seed_genexatox());
 
-	// random_engineの結果をmin ~ maxの範囲で返す
+	// xandom_engineの結果をmin ~ maxの範囲で返す
 	auto a = std::uniform_int_distribution<>(min, max);
 
-	return a(random_engine);
+	return a(xandom_engine);
 
 }
 
@@ -67,7 +67,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	}
 
-	DxLib_End(); // DXライブラリ終了処理
+	DxLib_End(); // Dxライブラリ終了処理
 	return 0;
 
 

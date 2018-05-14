@@ -3,9 +3,9 @@
 
 
 
-void Trout::set_score(int SCORE)
+void Trout::set_score(int score)
 {
-	score = SCORE;
+	score = score;
 }
 
 int Trout::get_score() const
