@@ -83,22 +83,21 @@ void Draw::Draw_color(const int R, const int C, const int COLOR, const int INSID
 
 	int color = GetColor(0, 0, 0);
 
+
+	if(INSIDE_COLOR == INSIDE_B)
+		color = GetColor(0, 0, 100);
+	else if(INSIDE_COLOR == INSIDE_Y)
+		color = GetColor(100, 100, 0);
+	else if(INSIDE_COLOR == INSIDE_BOTH)
+		color = GetColor(100, 100, 100);
+
+
 	if (COLOR == BLUE)
 		color = GetColor(0, 0, 255);
 	else if (COLOR == YELLOW)
 		color = GetColor(255, 255, 0);
 	else if (COLOR == CHOSEN)
 		color = GetColor(255, 255, 255);
-	else if (COLOR == NONE)
-		color = GetColor(0, 0, 0);
-
-	if(INSIDE_COLOR == INSIDE_B)
-		color = GetColor(0, 0, 70);
-	else if(INSIDE_COLOR == INSIDE_Y)
-		color = GetColor(70, 70, 0);
-	else if(INSIDE_COLOR == INSIDE_BOTH)
-		color = GetColor(70, 70, 70);
-
 
 
 

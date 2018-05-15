@@ -31,13 +31,13 @@ Game::Game()
 	agent_Blue[0].set_point(1, 1);
 
 	agent_Blue[1].set_color(BLUE);
-	agent_Blue[1].set_point(3, 1);
+	agent_Blue[1].set_point(4, 1);
 
 	agent_Yellow[0].set_color(YELLOW);
-	agent_Yellow[0].set_point(1, 3);
+	agent_Yellow[0].set_point(1, 4);
 
 	agent_Yellow[1].set_color(YELLOW);
-	agent_Yellow[1].set_point(3, 3);
+	agent_Yellow[1].set_point(4, 4);
 
 	mode = INIT;
 
@@ -124,14 +124,17 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 
 
 
-	for (int index_R = 0; index_R < stage.size(); ++index_R)//自身の色じゃない未探索マス探して探索開始
+	for (int index_R = 0; index_R < stage.size(); ++index_R)//探索開始
 	{
 
 		for (int index_C = 0; index_C < stage[0].size(); ++index_C)
 		{
 
 
-			if (!check_within(index_R, index_C, COLOR))//囲まれたマスかどうか,囲まれてなけりゃ
+			const bool result = check_within(index_R, index_C, COLOR);
+
+
+			if(!result)
 			{
 				for (int r = 0; r < stage.size(); ++r)
 					for (int c = 0; c < stage[0].size(); ++c)
@@ -141,7 +144,7 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 			}
 			else
 			{
-
+			
 				for (int r = 0; r < stage.size(); ++r)//囲まれていた場合
 					for (int c = 0; c < stage[0].size(); ++c)
 						if (!checkstage[r][c])//すでに来たマスは囲まれているのでtrueを格納
@@ -192,7 +195,10 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 		for (const auto s : S)
 		{
 			if (s.get_state() == COLOR)
+			{
 				score += s.get_score();
+				continue;
+			}
 
 			if(COLOR == BLUE)
 				if (s.get_Istate() == INSIDE_B || s.get_Istate() == INSIDE_BOTH)
@@ -217,20 +223,32 @@ bool Game::check_within(const int R, const int C, const int COLOR)
 {
 	const auto lmd_isRightPoint = [&](int _R, int _C)->bool
 	{
-		if ((_R <= 0 || _R >= stage.size() - 1 || _C <= 0 || _C >= stage[0].size() - 1) && stage[R][C].get_state() != COLOR)
+		if (_R <= 0 || _R >= stage.size() - 1 || _C <= 0 || _C >= stage[0].size() - 1)
 			return false;
-		else 
+		else
 			return true;
 	};
 
 
-	checkstage[R][C] = false;//すでに来た場所ということでチェック入れる
 
-	if (!lmd_isRightPoint(R, C) || !lmd_isRightPoint(R - 1, C) || !lmd_isRightPoint(R + 1, C) || !lmd_isRightPoint(R, C - 1) || !lmd_isRightPoint(R, C + 1))//壁に接していたら
+
+	if (!checkstage[R][C])//すでに来た場所ならtrueを返す
+		return true;
+	
+	checkstage[R][C] = false;//すでに来た場所ということでチェック入れる
+	
+
+	if (!lmd_isRightPoint(R, C))//壁に接していたら
 		return false;
 
-	if (stage[R][C].get_state() == COLOR || !checkstage[R][C])//自身の色のマスもしくはすでに来たマスなら
+	if (stage[R][C].get_state() == COLOR)//自身の色のマスならtrueを返す
 		return true;
+
+
+	//if (!lmd_isRightPoint(R, C) || !lmd_isRightPoint(R - 1, C) || !lmd_isRightPoint(R + 1, C) || !lmd_isRightPoint(R, C - 1) || !lmd_isRightPoint(R, C + 1))//壁に接していたら
+	//	return false;
+
+
 
 
 
@@ -241,15 +259,15 @@ bool Game::check_within(const int R, const int C, const int COLOR)
 	   		return false;
 
 	if (checkstage[R + 1][C])//下が同上
-		if (!check_within(R, C + 1, COLOR))//下について調べる
+		if (!check_within(R + 1, C, COLOR))//下について調べる
 			return false;
 
 	if (checkstage[R][C + 1])//右が同上
-		if (!check_within(R - 1, C, COLOR))//右について調べる
+		if (!check_within(R, C + 1, COLOR))//右について調べる
 			return false;
 
 	if (checkstage[R][C - 1])//左が同上
-		if (!check_within(R + 1, C, COLOR))//左について調べる
+		if (!check_within(R, C - 1, COLOR))//左について調べる
 			return false;
 
 
