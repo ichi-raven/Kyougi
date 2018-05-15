@@ -20,11 +20,11 @@ public:
 
 	int get_color() const;
 
-	void move(const int R, const int C, std::vector<std::vector<Trout> > &stage);//方向指定して移動、方向はconstexpr
+	void move(const int R, const int C, std::vector<std::vector<Trout> > &stage);//移動
 
-	void remove(const int R, const int C, std::vector<std::vector<Trout> > &stage);//方向指定して撤去、方向はry
+	void remove(const int R, const int C, std::vector<std::vector<Trout> > &stage);//撤去
 
-	void deploy(const int R, const int C, const int COLOR, std::vector<std::vector<Trout> > &stage);//方向指定して設置、方向、色はry
+	void deploy(const int R, const int C, const int COLOR, std::vector<std::vector<Trout> > &stage);//設置
 
 
 private:

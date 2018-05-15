@@ -1,7 +1,3 @@
 ﻿  Game.cpp
-c:\users\ichi2\git-repositories\kyougi\kyougi_30_ui\game.cpp(51): warning C4267: '引数': 'size_t' から 'const int' に変換しました。データが失われているかもしれません。
-c:\users\ichi2\git-repositories\kyougi\kyougi_30_ui\game.cpp(99): warning C4244: '初期化中': '__int64' から 'int' への変換です。データが失われる可能性があります。
-c:\users\ichi2\git-repositories\kyougi\kyougi_30_ui\game.cpp(99): warning C4244: '初期化中': '__int64' から 'const int' への変換です。データが失われる可能性があります。
-c:\users\ichi2\git-repositories\kyougi\kyougi_30_ui\game.cpp(103): warning C4244: '初期化中': '__int64' から 'int' への変換です。データが失われる可能性があります。
-c:\users\ichi2\git-repositories\kyougi\kyougi_30_ui\game.cpp(103): warning C4244: '初期化中': '__int64' から 'const int' への変換です。データが失われる可能性があります。
-  Kyougi_30_UI.vcxproj -> C:\Users\ichi2\Git-repositories\Kyougi\x64\Debug\Kyougi_30_UI.exe
+c:\users\manabey\desktop\repositories\kyougi\kyougi_30_ui\game.cpp(51): warning C4267: '引数': 'size_t' から 'const int' に変換しました。データが失われているかもしれません。
+  Kyougi_30_UI.vcxproj -> C:\Users\ManabeY\Desktop\Repositories\Kyougi\x64\Debug\Kyougi_30_UI.exe

@@ -36,7 +36,7 @@ enum
 
 	YELLOW,
 
-	INSIDE_B,
+	INSIDE_B,//“à‘¤‚ð•\‚·‚Ì‚ª‚±‚±‚É‚ ‚é‚Ì‚ÍF‚Æ”í‚é‚±‚Æ‚ð‹°‚ê‚½‚½‚ß
 
 	INSIDE_Y,
 

@@ -13,7 +13,7 @@ public:
 
 	int score_calcurate(const int COLOR);//計算まとめ
 
-	bool check_within(const int R, const int C, const int COLOx);//再帰関数、上記計算関数内で呼び出す
+	bool check_within(const int R, const int C, const int COLOR);//再帰関数、上記計算関数内で呼び出す
 
 	void Turn(Agent* AGENT, const int AGENT_IND);//移動、撤去、設置まとめ
 
@@ -31,7 +31,9 @@ private:
 
 	std::vector<std::vector<Trout> > stage;//Trout型2次元配列
 
-	std::vector<std::vector<bool> > checkstage;//チェック用、主にscore_calcurateでしか使わない
+	std::vector<std::vector<bool> > checkstage;//その再帰においてすでに訪れていればfalse, 訪れていなければtrue
+
+	std::vector<std::vector<bool> > decisionstage;//trueで囲まれている、falseで囲まれてない
 
 	Draw renderer;//描画処理用
 

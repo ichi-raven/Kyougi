@@ -21,7 +21,7 @@ public:
 
 	void Draw_number(const int R, const int C, const int number);//数値描画
 
-	void Draw_color(const int R, const int C, const int COLOR);//色描画
+	void Draw_color(const int R, const int C, const int COLOR , const int INSIDE_COLOR);//色描画
 
 	//void Draw_score(const int score);//スコアを右上にでも描画
 

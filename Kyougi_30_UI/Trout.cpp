@@ -22,3 +22,13 @@ int Trout::get_state() const
 {
 	return state;
 }
+
+void Trout::set_Istate(const int INSIDE_STATE)
+{
+	inside_state = INSIDE_STATE;
+}
+
+int Trout::get_Istate() const
+{
+	return inside_state;
+}
