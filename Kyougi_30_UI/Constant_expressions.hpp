@@ -7,7 +7,7 @@ constexpr unsigned int X_MAX = 640;
 
 constexpr unsigned int Y_MIN = 0;
 
-constexpr unsigned int Y_MAX = 480;
+constexpr unsigned int Y_MAX = 600;
 
 
 
@@ -55,3 +55,5 @@ enum
 
 
 extern int Key[256];
+
+int get_rand(int, int);

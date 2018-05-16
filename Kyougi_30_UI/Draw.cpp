@@ -18,25 +18,18 @@ void Draw::set_coodinate(const int R_NUM, const int C_NUM)
 	}
 
 
-	int diff_r = X_MIN + (X_MAX / 2) - (TROUT_SIZE * R_NUM / 2);//èåèÇ…âûÇ∂Çƒë„ì¸
-	int diff_c = Y_MIN + (Y_MAX / 2) - (TROUT_SIZE * C_NUM / 2);
-
-	if (C_NUM % 2)
-		diff_c += (TROUT_SIZE / 2);
-
-
-	if (R_NUM % 2)
-		diff_r += (TROUT_SIZE / 2);
-
+	const int diff_r = (Y_MIN + (Y_MAX - Point.back().back().y) ) / 2;//èåèÇ…âûÇ∂Çƒë„ì¸
 	
- 
+	const int diff_c = (X_MIN + (X_MAX - Point.back().back().x) ) / 2;
 
-	//for(auto &P : Point)
-	//	for (auto &p : P)
-	//	{
-	//		p.x += diff_c;
-	//		p.y += diff_r;
-	//	}
+	printfDx("%d:%d\n%d, %d\n", R_NUM, C_NUM, diff_r, diff_c);
+
+	for(auto &P : Point)
+		for (auto &p : P)
+		{
+			p.x += diff_c - 10;
+			p.y += diff_r - 20;
+		}
 
 
 
@@ -57,6 +50,8 @@ void Draw::Draw_line()
 	{
 		DrawLine(Point[0][i].x, Point[0][i].y, Point[r_size - 1][i].x, Point[r_size - 1][i].y + TROUT_SIZE, GetColor(255, 255, 255));
 	}
+
+	DrawLine(Point[0][c_size - 1].x + TROUT_SIZE, Point[0][c_size - 1].y, Point[r_size - 1][c_size - 1].x + TROUT_SIZE, Point[r_size - 1][c_size - 1].y + TROUT_SIZE, GetColor(255, 255, 255));
 	
 
 
@@ -65,6 +60,7 @@ void Draw::Draw_line()
 		DrawLine(Point[i][0].x, Point[i][0].y, Point[i][c_size - 1].x + TROUT_SIZE, Point[i][c_size - 1].y, GetColor(100, 255, 255));
 	}
 
+	DrawLine(Point[r_size - 1][0].x, Point[r_size - 1][0].y + TROUT_SIZE, Point[r_size - 1][c_size - 1].x + TROUT_SIZE, Point[r_size - 1][c_size - 1].y + TROUT_SIZE, GetColor(255, 255, 255));
 	
 }
 
@@ -118,6 +114,17 @@ void Draw::Draw_Agent(const int R, const int C, const int COLOR)
 		assert(!"Color isn't right!");
 
 	DrawCircle(Point[R][C].x + TROUT_SIZE / 2, Point[R][C].y + TROUT_SIZE / 2, TROUT_SIZE / 2, color);
+}
+
+void Draw::Draw_Util(const int TURN, const int B_PTS, const int Y_PTS)
+{
+	DrawLine(X_MAX, 0, X_MAX, Y_MAX, GetColor(255, 255, 255));//ãÊêÿÇËê¸
+
+	DrawFormatString(680, Y_MAX / 4 + Y_MIN, GetColor(255, 255, 255), "turn : %d", TURN);
+
+	DrawFormatString(680, Y_MAX / 2 + Y_MIN, GetColor(255, 255, 255), "blue : %d", B_PTS);
+
+	DrawFormatString(680, Y_MAX / 4 * 3 + Y_MIN, GetColor(255, 255, 255), "yellow : %d", Y_PTS);
 }
 
 

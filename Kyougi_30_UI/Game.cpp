@@ -8,14 +8,16 @@
 Game::Game()
 {
 
+	const int R_num = get_rand(9, 12);
 
+	const int C_num = get_rand(9, 12);
 
-	for (int i = 0; i < 8; ++i)
+	for (int r = 0; r < R_num; ++r)
 	{
 		stage.emplace_back();
-		for (int j = 0; j < 10; ++j)
+		for (int c = 0; c < C_num; ++c)
 		{
-			stage[i].emplace_back();
+			stage[r].emplace_back();
 		}
 	}
 
@@ -24,24 +26,33 @@ Game::Game()
 		for (auto &s : S)
 		{
 			s.set_state(NONE);
+			s.set_Istate(NONE);
 			s.set_score(-1);
 		}
 
+	const int agent_defR = get_rand(1, R_num / 2 - 1);
+
+	const int agent_defC = get_rand(1, C_num / 2 - 1);
+
 	agent_Blue[0].set_color(BLUE);
-	agent_Blue[0].set_point(1, 1);
+	agent_Blue[0].set_point(agent_defR, agent_defC);
 
 	agent_Blue[1].set_color(BLUE);
-	agent_Blue[1].set_point(4, 1);
+	agent_Blue[1].set_point(R_num - agent_defR - 1, agent_defC);
 
 	agent_Yellow[0].set_color(YELLOW);
-	agent_Yellow[0].set_point(1, 4);
+	agent_Yellow[0].set_point(agent_defR, C_num - agent_defC - 1);
 
 	agent_Yellow[1].set_color(YELLOW);
-	agent_Yellow[1].set_point(4, 4);
+	agent_Yellow[1].set_point(R_num - agent_defR - 1, C_num - agent_defC - 1);
 
 	mode = INIT;
 
 	inputting = 0;
+
+	turn_num = 0;
+	blue_score = 0;
+	yellow_score = 0;
 
 }
 
@@ -164,9 +175,14 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 	for (int r = 0; r < stage.size(); ++r)
 		for (int c = 0; c < stage[0].size(); ++c)
 		{
-			if (stage[r][c].get_state() == COLOR || !decisionstage[r][c])//自身のマス もしくは囲まれてない
+			if (stage[r][c].get_state() == COLOR)//自身のマス
 				continue;
-			
+
+			if (!decisionstage[r][c])//囲まれてない
+			{
+				stage[r][c].set_Istate(NONE);
+				continue;
+			}
 
 			if (COLOR == BLUE)//色付け部分
 			{
@@ -285,10 +301,10 @@ void Game::Draw_update()
 {
 	renderer.Draw_line();//ステージの線描画
 
+
+
+
 	int r = 0, c = 0;
-
-
-
 	for (const auto S : stage)//ステージの色がある場所描画
 	{
 		
@@ -322,6 +338,7 @@ void Game::Draw_update()
 
 	//スコア実装		
 
+	renderer.Draw_Util(turn_num, blue_score, yellow_score);
 
 
 }
@@ -493,8 +510,8 @@ void Game::mainLoop()
 			break;
 
 		case 4://入力終了
-			printfDx("%d\n", this->score_calcurate(BLUE) );//なんかに入力して表示
-			printfDx("%d\n", this->score_calcurate(YELLOW) );
+			blue_score = this->score_calcurate(BLUE);
+			yellow_score = this->score_calcurate(YELLOW);
 
 
 			inputting = 0;

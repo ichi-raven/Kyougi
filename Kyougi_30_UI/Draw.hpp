@@ -27,6 +27,8 @@ public:
 
 	void Draw_Agent(const int R, const int C, const int COLOR);//エージェント描画
 
+	void Draw_Util(const int TURN, const int B_PTS, const int Y_PTS);//点数とターン描画
+
 private:
 
 	std::vector<std::vector<vec2> > Point;//ここでしか使わない表示用座標,各マスの左上座標を格納している

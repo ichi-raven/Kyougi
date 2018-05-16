@@ -51,7 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 
-	ChangeWindowMode(true), DxLib_Init(), SetDrawScreen(DX_SCREEN_BACK), SetGraphMode(800, 480, 16); //ウィンドウモード変更と初期化と裏画面設定と画面サイズ変更
+	ChangeWindowMode(true), DxLib_Init(), SetDrawScreen(DX_SCREEN_BACK), SetGraphMode(800, 600, 16); //ウィンドウモード変更と初期化と裏画面設定と画面サイズ変更
 	
 
 	Game game;
