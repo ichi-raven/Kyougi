@@ -50,7 +50,10 @@ Game::Game()
 
 	inputting = 0;
 
-	turn_num = 0;
+	turn_num = 1;
+
+	limit_turn = get_rand(80, 120);
+
 	blue_score = 0;
 	yellow_score = 0;
 
@@ -80,12 +83,15 @@ void Game::make_stage()
 		c = 0;
 	}
 
+	//別にいらないけど行数,列数表示
+	printfDx("R%d: C%d\n", stage.size() - 1, stage[0].size() - 1);
+
 	
 	
 }
 
 
-int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
+void Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 {
 
 	const auto lmd_init_checkstage = [&]()//checkstage初期化
@@ -98,12 +104,10 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 
 			for (auto &s : S)
 			{
-
 				if (s.get_state() != COLOR)
 					checkstage.back().emplace_back(true);
 				else
 					checkstage.back().emplace_back(false);
-
 			}
 		}
 	};
@@ -141,9 +145,10 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 		for (int index_C = 0; index_C < stage[0].size(); ++index_C)
 		{
 
-
 			const bool result = check_within(index_R, index_C, COLOR);
 
+			if (checkstage[index_R][index_C])//判定終了時に未到達の点は
+				continue;
 
 			if(!result)
 			{
@@ -151,16 +156,15 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 					for (int c = 0; c < stage[0].size(); ++c)
 						if (!checkstage[r][c])//すでに来たマスについて全部falseをdecisionstageに代入
 							decisionstage[r][c] = false;
-
 			}
 			else
 			{
-			
 				for (int r = 0; r < stage.size(); ++r)//囲まれていた場合
 					for (int c = 0; c < stage[0].size(); ++c)
 						if (!checkstage[r][c])//すでに来たマスは囲まれているのでtrueを格納
 							decisionstage[r][c] = true;
 			}
+
 
 
 			lmd_init_checkstage();//checkstage初期化
@@ -225,7 +229,12 @@ int Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 					score += abs(s.get_score());
 		}
 
-	return score;
+	if (COLOR == BLUE)
+		blue_score = score;
+	else if (COLOR == YELLOW)
+		yellow_score = score;
+	else
+		assert(!"Color isn't right!");
 
 }
 
@@ -337,8 +346,9 @@ void Game::Draw_update()
 
 
 	//スコア実装		
+	renderer.Draw_Util(turn_num, limit_turn, blue_score, yellow_score);
 
-	renderer.Draw_Util(turn_num, blue_score, yellow_score);
+
 
 
 }
@@ -441,7 +451,7 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 	
 	renderer.Draw_color(r_now + move_r, c_now + move_c, CHOSEN, inside_state_trout_now);
 	
-	if (Key[KEY_INPUT_M] == 1 && state_trout_now != enemy_color && !(another_r_now == r_now + move_r && another_c_now == c_now + move_c))
+	if (Key[KEY_INPUT_Z] == 1 && state_trout_now != enemy_color && !(another_r_now == r_now + move_r && another_c_now == c_now + move_c) )
 	{
 		agent_now[AGENT_IND].move(r_now + move_r, c_now + move_c, stage);
 		inputting++;
@@ -450,7 +460,7 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 		return;
 		
 	}
-	else if (Key[KEY_INPUT_R] == 1 && state_trout_now == enemy_color)
+	else if (Key[KEY_INPUT_C] == 1 && state_trout_now == enemy_color && (move_c != 0 || move_r != 0) )
 	{
 		agent_now[AGENT_IND].remove(r_now + move_r, c_now + move_c, stage);
 		inputting++;
@@ -459,7 +469,7 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 		return;
 		
 	}
-	else if (Key[KEY_INPUT_D] == 1 && state_trout_now != BLUE && state_trout_now != YELLOW)
+	else if (Key[KEY_INPUT_X] == 1 && state_trout_now != BLUE && state_trout_now != YELLOW && (move_c != 0 || move_r != 0) )
 	{
 		agent_now[AGENT_IND].deploy(r_now + move_r, c_now + move_c, agent_now[AGENT_IND].get_color(), stage);
 		inputting++;
@@ -510,14 +520,16 @@ void Game::mainLoop()
 			break;
 
 		case 4://入力終了
-			blue_score = this->score_calcurate(BLUE);
-			yellow_score = this->score_calcurate(YELLOW);
+			this->score_calcurate(BLUE);
+			this->score_calcurate(YELLOW);
 
 
 			inputting = 0;
 
 			++turn_num;
-			//設定したターン数を過ぎたらmodeをENDに
+			if (turn_num >= limit_turn)//設定したターン数を過ぎたらmodeをENDに
+				mode = END;
+		
 			break;
 
 		default:
@@ -530,7 +542,8 @@ void Game::mainLoop()
 
 		break;
 
-	case END://スコアとか表示してリトライ
+	case END://リトライ
+		mode = INIT;
 		break;
 
 	default:

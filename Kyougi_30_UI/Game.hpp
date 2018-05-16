@@ -11,7 +11,7 @@ public:
 
 	void make_stage();
 
-	int score_calcurate(const int COLOR);//計算まとめ
+	void score_calcurate(const int COLOR);//計算まとめ
 
 	bool check_within(const int R, const int C, const int COLOR);//再帰関数、上記計算関数内で呼び出す
 
@@ -42,6 +42,8 @@ private:
 	int yellow_score;//同上
 
 	int turn_num;//過ぎたターン数
+
+	int limit_turn;//限界ターン
 
 	int inputting;//今入力しているエージェント
 

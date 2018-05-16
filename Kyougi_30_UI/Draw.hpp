@@ -27,7 +27,7 @@ public:
 
 	void Draw_Agent(const int R, const int C, const int COLOR);//エージェント描画
 
-	void Draw_Util(const int TURN, const int B_PTS, const int Y_PTS);//点数とターン描画
+	void Draw_Util(const int TURN, const int LIMIT_TURN, const int B_PTS, const int Y_PTS);//点数とターン描画
 
 private:
 

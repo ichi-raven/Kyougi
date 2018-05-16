@@ -22,7 +22,7 @@ void Draw::set_coodinate(const int R_NUM, const int C_NUM)
 	
 	const int diff_c = (X_MIN + (X_MAX - Point.back().back().x) ) / 2;
 
-	printfDx("%d:%d\n%d, %d\n", R_NUM, C_NUM, diff_r, diff_c);
+	//printfDx("%d:%d\n%d, %d\n", R_NUM, C_NUM, diff_r, diff_c);
 
 	for(auto &P : Point)
 		for (auto &p : P)
@@ -81,15 +81,15 @@ void Draw::Draw_color(const int R, const int C, const int COLOR, const int INSID
 
 
 	if(INSIDE_COLOR == INSIDE_B)
-		color = GetColor(0, 0, 100);
+		color = GetColor(0, 0, 200);
 	else if(INSIDE_COLOR == INSIDE_Y)
-		color = GetColor(100, 100, 0);
+		color = GetColor(100, 150, 0);
 	else if(INSIDE_COLOR == INSIDE_BOTH)
 		color = GetColor(100, 100, 100);
 
 
 	if (COLOR == BLUE)
-		color = GetColor(0, 0, 255);
+		color = GetColor(0, 0, 250);
 	else if (COLOR == YELLOW)
 		color = GetColor(255, 255, 0);
 	else if (COLOR == CHOSEN)
@@ -116,15 +116,17 @@ void Draw::Draw_Agent(const int R, const int C, const int COLOR)
 	DrawCircle(Point[R][C].x + TROUT_SIZE / 2, Point[R][C].y + TROUT_SIZE / 2, TROUT_SIZE / 2, color);
 }
 
-void Draw::Draw_Util(const int TURN, const int B_PTS, const int Y_PTS)
+void Draw::Draw_Util(const int TURN, const int LIMIT_TURN, const int B_PTS, const int Y_PTS)
 {
 	DrawLine(X_MAX, 0, X_MAX, Y_MAX, GetColor(255, 255, 255));//ãÊêÿÇËê¸
 
-	DrawFormatString(680, Y_MAX / 4 + Y_MIN, GetColor(255, 255, 255), "turn : %d", TURN);
+	DrawFormatString(680, Y_MAX / 4 + Y_MIN, GetColor(255, 255, 255), "turn : %d\nlimit : %d", TURN, LIMIT_TURN);
 
 	DrawFormatString(680, Y_MAX / 2 + Y_MIN, GetColor(255, 255, 255), "blue : %d", B_PTS);
 
 	DrawFormatString(680, Y_MAX / 4 * 3 + Y_MIN, GetColor(255, 255, 255), "yellow : %d", Y_PTS);
+
+		
 }
 
 
