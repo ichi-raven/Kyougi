@@ -160,7 +160,7 @@ void Game::rnd_score_set(std::vector<std::vector<int> >&rndin, const int R_NUM, 
 
 	}
 
-	return;
+
 }
 
 
