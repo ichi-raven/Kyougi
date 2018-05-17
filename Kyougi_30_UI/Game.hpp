@@ -10,6 +10,8 @@ public:
 	Game();
 
 	void make_stage();
+	
+	void rnd_score_set(std::vector<std::vector<int> >&rndin, const int R_NUM, const int C_NUM);//ランダムスコア生成、上記関数でしか使わない
 
 	void score_calcurate(const int COLOR);//計算まとめ
 

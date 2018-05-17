@@ -8,6 +8,24 @@
 Game::Game()
 {
 
+
+	mode = INIT;
+
+	inputting = 0;
+
+	turn_num = 1;
+
+	limit_turn = get_rand(80, 120);
+
+	blue_score = 0;
+	yellow_score = 0;
+
+}
+
+void Game::make_stage()
+{
+
+
 	const int R_num = get_rand(9, 12);
 
 	const int C_num = get_rand(9, 12);
@@ -21,13 +39,16 @@ Game::Game()
 		}
 	}
 
+	std::vector<std::vector<int> > score;
 
-	for (auto &S : stage)
-		for (auto &s : S)
+	rnd_score_set(score, R_num, C_num);
+
+	for (int r = 0; r < stage.size(); ++r)
+		for (int c = 0; c < stage[0].size(); ++c)
 		{
-			s.set_state(NONE);
-			s.set_Istate(NONE);
-			s.set_score(-1);
+			stage[r][c].set_state(NONE);
+			stage[r][c].set_Istate(NONE);
+			stage[r][c].set_score(score[r][c]);
 		}
 
 	const int agent_defR = get_rand(1, R_num / 2 - 1);
@@ -46,21 +67,8 @@ Game::Game()
 	agent_Yellow[1].set_color(YELLOW);
 	agent_Yellow[1].set_point(R_num - agent_defR - 1, C_num - agent_defC - 1);
 
-	mode = INIT;
 
-	inputting = 0;
 
-	turn_num = 1;
-
-	limit_turn = get_rand(80, 120);
-
-	blue_score = 0;
-	yellow_score = 0;
-
-}
-
-void Game::make_stage()
-{
 
 	renderer.set_coodinate(stage.size(), stage[0].size());
 
@@ -84,10 +92,75 @@ void Game::make_stage()
 	}
 
 	//別にいらないけど行数,列数表示
-	printfDx("R%d: C%d\n", stage.size() - 1, stage[0].size() - 1);
+	printfDx("R%d: C%d\n", stage.size(), stage[0].size() );
 
 	
 	
+}
+
+void Game::rnd_score_set(std::vector<std::vector<int> >&rndin, const int R_NUM, const int C_NUM)
+{
+	/* なんちゃって確率操作。余裕があれば書き直します */
+
+	std::random_device rnd;
+	std::mt19937 mt(rnd());
+	std::uniform_int_distribution<> rnd33(0, 16);
+	std::uniform_int_distribution<> rnd25(-16, 0);
+	std::uniform_int_distribution<> rnd17(0, 8);
+
+	std::random_device R_bool;
+	std::mt19937 mt2(R_bool());
+	std::uniform_int_distribution<> r_bool(0, 10);
+
+
+	rndin.resize(R_NUM);
+	for (int a = 0; a < R_NUM; a++)
+		rndin[a].resize(C_NUM);
+
+
+	/* 負の数が少なめになるように色々いじっています。 */
+
+	int i, j;
+
+	for (i = 0; i < R_NUM; i++) {
+
+		if (C_NUM % 2 == 0) {
+			for (j = 0; j < C_NUM / 2; j++) {
+				if (r_bool(mt2) == 0) {
+					rndin[i][j] = rnd25(mt);
+					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
+				}
+				else {
+					rndin[i][j] = rnd33(mt);
+					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
+				}
+			}
+		}
+
+		else {
+			for (j = 0; j < C_NUM / 2; j++) {
+				if (r_bool(mt2) == 0) {
+					rndin[i][j] = rnd25(mt);
+					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
+				}
+				else {
+					rndin[i][j] = rnd33(mt);
+					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
+				}
+			}
+
+
+			if (r_bool(mt2) == 0)
+				rndin[i][j] = rnd25(mt);
+			else
+				rndin[i][j] = rnd33(mt);
+
+		}
+
+
+	}
+
+	return;
 }
 
 
