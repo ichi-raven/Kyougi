@@ -81,19 +81,19 @@ void Draw::Draw_color(const int R, const int C, const int COLOR, const int INSID
 
 
 	if(INSIDE_COLOR == INSIDE_B)
-		color = GetColor(0, 0, 200);
+		color = GetColor(0, 0, 70);
 	else if(INSIDE_COLOR == INSIDE_Y)
-		color = GetColor(100, 150, 0);
+		color = GetColor(70, 70, 0);
 	else if(INSIDE_COLOR == INSIDE_BOTH)
-		color = GetColor(100, 100, 100);
+		color = GetColor(70, 70, 70);
 
 
 	if (COLOR == BLUE)
-		color = GetColor(0, 0, 250);
+		color = GetColor(0, 0, 200);
 	else if (COLOR == YELLOW)
-		color = GetColor(255, 255, 0);
+		color = GetColor(200, 200, 0);
 	else if (COLOR == CHOSEN)
-		color = GetColor(255, 255, 255);
+		color = GetColor(200, 200, 200);
 
 
 
@@ -113,7 +113,7 @@ void Draw::Draw_Agent(const int R, const int C, const int COLOR)
 	else 
 		assert(!"Color isn't right!");
 
-	DrawCircle(Point[R][C].x + TROUT_SIZE / 2, Point[R][C].y + TROUT_SIZE / 2, TROUT_SIZE / 2, color);
+	DrawCircle(Point[R][C].x + TROUT_SIZE / 2, Point[R][C].y + TROUT_SIZE / 2, TROUT_SIZE / 4, color);
 }
 
 void Draw::Draw_Util(const int TURN, const int LIMIT_TURN, const int B_PTS, const int Y_PTS)
