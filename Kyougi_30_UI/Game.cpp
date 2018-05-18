@@ -530,19 +530,21 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 	const int state_trout_now = stage[r_now + move_r][c_now + move_c].get_state();
 
 	const int inside_state_trout_now = stage[r_now + move_r][c_now + move_c].get_Istate();
+
 	
 	renderer.Draw_color(r_now + move_r, c_now + move_c, CHOSEN, inside_state_trout_now);
 	
 	if ((Key[KEY_INPUT_Z] == 1  || Key[KEY_INPUT_M] == 1) && state_trout_now != enemy_color && !(another_r_now == r_now + move_r && another_c_now == c_now + move_c) )
 	{
 		agent_now[AGENT_IND].move(r_now + move_r, c_now + move_c, stage);
+		agent_now[AGENT_IND].deploy(r_now + move_r, c_now + move_c, agent_now[AGENT_IND].get_color(), stage);
 		inputting++;
 		move_r = 0;
 		move_c = 0;
 		return;
 		
 	}
-	else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now == enemy_color && (move_c != 0 || move_r != 0) )
+	else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now != NONE && (move_c != 0 || move_r != 0) )
 	{
 		agent_now[AGENT_IND].remove(r_now + move_r, c_now + move_c, stage);
 		inputting++;
@@ -551,14 +553,10 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 		return;
 		
 	}
-	else if ((Key[KEY_INPUT_X] == 1 || Key[KEY_INPUT_D] == 1) && state_trout_now != BLUE && state_trout_now != YELLOW && (move_c != 0 || move_r != 0) )
-	{
-		agent_now[AGENT_IND].deploy(r_now + move_r, c_now + move_c, agent_now[AGENT_IND].get_color(), stage);
-		inputting++;
-		move_r = 0;
-		move_c = 0;
-		return;
-	}
+	
+	
+	if (state_trout_now != BLUE && state_trout_now != YELLOW)
+		agent_now[AGENT_IND].deploy(r_now, c_now, agent_now[AGENT_IND].get_color(), stage);
 
 	
 	return;

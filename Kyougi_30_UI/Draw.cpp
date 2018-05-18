@@ -66,7 +66,7 @@ void Draw::Draw_line()
 
 void Draw::Draw_number(const int R, const int C, int NUMBER)
 {
-	const int diff = TROUT_SIZE / 2;
+	const int diff = TROUT_SIZE / 2 - 7;
 
 
 	DrawFormatString(Point[R][C].x + diff, Point[R][C].y + diff, GetColor(255, 0, 0), "%d", NUMBER);
