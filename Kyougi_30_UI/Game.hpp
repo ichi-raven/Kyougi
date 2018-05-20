@@ -17,7 +17,7 @@ public:
 
 	bool check_within(const int R, const int C, const int COLOR);//再帰関数、上記計算関数内で呼び出す
 
-	void Turn(Agent* AGENT, const int AGENT_IND);//移動、撤去、設置まとめ
+	void Turn(Agent* AGENT);//移動、撤去、設置まとめ
 
 	void Draw_update();//アップデートする場所のみ描画
 
@@ -27,9 +27,7 @@ private:
 
 	int mode;//メインループが何をするかの分岐用
 
-	Agent agent_Blue[2];//エージェント二人
-
-	Agent agent_Yellow[2];//同上
+	Agent agent[4];//エージェント4人、前二人が青
 
 	std::vector<std::vector<Trout> > stage;//Trout型2次元配列
 

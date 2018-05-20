@@ -22,6 +22,14 @@ int Agent::get_col_point() const
 	return mC;
 }
 
+bool Agent::isSamePoint(const Agent& ANOTHER, const int MOVE_R, const int MOVE_C) const
+{
+	if (ANOTHER.get_raw_point() == mR + MOVE_R && ANOTHER.get_col_point() == mC + MOVE_C)
+		return true;
+	else
+		return false;
+}
+
 void Agent::set_color(const int COLOR)
 {
 	color = COLOR;

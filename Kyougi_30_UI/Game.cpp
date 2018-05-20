@@ -55,17 +55,17 @@ void Game::make_stage()
 
 	const int agent_defC = get_rand(1, C_num / 2 - 1);
 
-	agent_Blue[0].set_color(BLUE);
-	agent_Blue[0].set_point(agent_defR, agent_defC);
-
-	agent_Blue[1].set_color(BLUE);
-	agent_Blue[1].set_point(R_num - agent_defR - 1, agent_defC);
-
-	agent_Yellow[0].set_color(YELLOW);
-	agent_Yellow[0].set_point(agent_defR, C_num - agent_defC - 1);
-
-	agent_Yellow[1].set_color(YELLOW);
-	agent_Yellow[1].set_point(R_num - agent_defR - 1, C_num - agent_defC - 1);
+	agent[0].set_color(BLUE);
+	agent[0].set_point(agent_defR, agent_defC);
+		 
+	agent[1].set_color(BLUE);
+	agent[1].set_point(R_num - agent_defR - 1, agent_defC);
+		 
+	agent[2].set_color(YELLOW);
+	agent[2].set_point(agent_defR, C_num - agent_defC - 1);
+		 
+	agent[3].set_color(YELLOW);
+	agent[3].set_point(R_num - agent_defR - 1, C_num - agent_defC - 1);
 
 
 
@@ -412,11 +412,10 @@ void Game::Draw_update()
 
 
 
-	for (int i = 0; i < 2; ++i)//エージェント描画
+	for (int i = 0; i < 4; ++i)//エージェント描画
 	{
-		renderer.Draw_Agent(agent_Blue[i].get_raw_point(), agent_Blue[i].get_col_point(), agent_Blue[i].get_color());
+		renderer.Draw_Agent(agent[i].get_raw_point(), agent[i].get_col_point(), agent[i].get_color());
 
-		renderer.Draw_Agent(agent_Yellow[i].get_raw_point(), agent_Yellow[i].get_col_point(), agent_Yellow[i].get_color());
 	}
 
 
@@ -435,7 +434,7 @@ void Game::Draw_update()
 
 }
 
-void Game::Turn(Agent* AGENT, const int AGENT_IND)
+void Game::Turn(Agent* AGENT)
 {
 
 	
@@ -458,18 +457,15 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 		
 	};
 
-
+	
 	Agent* agent_now = AGENT;
 
-	const int enemy_color = (agent_now[AGENT_IND].get_color() == BLUE ? YELLOW : BLUE);
+	const int enemy_color = (agent_now->get_color() == BLUE ? YELLOW : BLUE);
 	
-	const int r_now = agent_now[AGENT_IND].get_raw_point();
+	const int r_now = agent_now->get_raw_point();
 
-	const int c_now = agent_now[AGENT_IND].get_col_point();
+	const int c_now = agent_now->get_col_point();
 
-	const int another_r_now = agent_now[(AGENT_IND - 1) * -1].get_raw_point();
-
-	const int another_c_now = agent_now[(AGENT_IND - 1) * -1].get_col_point();
 
 	static int move_r = 0;
 	 
@@ -534,19 +530,37 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 	
 	renderer.Draw_color(r_now + move_r, c_now + move_c, CHOSEN, inside_state_trout_now);
 	
-	if ((Key[KEY_INPUT_Z] == 1  || Key[KEY_INPUT_M] == 1) && state_trout_now != enemy_color && !(another_r_now == r_now + move_r && another_c_now == c_now + move_c) )
+	bool isNotSame = true;
+
+	for (int i = 0; i < 4; ++i)
 	{
-		agent_now[AGENT_IND].move(r_now + move_r, c_now + move_c, stage);
-		agent_now[AGENT_IND].deploy(r_now + move_r, c_now + move_c, agent_now[AGENT_IND].get_color(), stage);
+		//if (&agent[i] == agent_now)
+		//	continue;
+
+		if (agent_now->isSamePoint(agent[i], move_r, move_c))
+		{
+			isNotSame = false;
+			break;
+		}
+
+		
+	}
+
+
+	if ((Key[KEY_INPUT_Z] == 1  || Key[KEY_INPUT_M] == 1) && state_trout_now != enemy_color && isNotSame)
+	{
+		
+		agent_now->move(r_now + move_r, c_now + move_c, stage);
+		agent_now->deploy(r_now + move_r, c_now + move_c, agent_now->get_color(), stage);
 		inputting++;
 		move_r = 0;
 		move_c = 0;
 		return;
 		
 	}
-	else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now != NONE && (move_c != 0 || move_r != 0) )
+	else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now != NONE && isNotSame)
 	{
-		agent_now[AGENT_IND].remove(r_now + move_r, c_now + move_c, stage);
+		agent_now->remove(r_now + move_r, c_now + move_c, stage);
 		inputting++;
 		move_r = 0;
 		move_c = 0;
@@ -556,7 +570,7 @@ void Game::Turn(Agent* AGENT, const int AGENT_IND)
 	
 	
 	if (state_trout_now != BLUE && state_trout_now != YELLOW)
-		agent_now[AGENT_IND].deploy(r_now, c_now, agent_now[AGENT_IND].get_color(), stage);
+		agent_now->deploy(r_now, c_now, agent_now->get_color(), stage);
 
 	
 	return;
@@ -584,19 +598,19 @@ void Game::mainLoop()
 		switch (inputting)
 		{
 		case 0:
-			this->Turn(agent_Blue, 0);
+			this->Turn(&agent[0]);
 			break;
 
 		case 1:
-			this->Turn(agent_Blue, 1);
+			this->Turn(&agent[1]);
 			break;
 
 		case 2:
-			this->Turn(agent_Yellow, 0);
+			this->Turn(&agent[2]);
 			break;
 
 		case 3:
-			this->Turn(agent_Yellow, 1);
+			this->Turn(&agent[3]);
 			break;
 
 		case 4://入力終了

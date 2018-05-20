@@ -16,6 +16,8 @@ public:
 
 	int get_col_point() const;
 
+	bool isSamePoint(const Agent& ANOTHER, const int MOVE_R, const int MOVE_C) const;
+
 	void set_color(const int STATE);
 
 	int get_color() const;
