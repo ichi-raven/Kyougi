@@ -19,6 +19,8 @@ public:
 
 	void Turn(Agent* AGENT);//移動、撤去、設置まとめ
 
+	void Update();//それぞれのエージェントについて更新し、かぶったらスキップしたりする
+
 	void Draw_update();//アップデートする場所のみ描画
 
 	void mainLoop();//まとめ

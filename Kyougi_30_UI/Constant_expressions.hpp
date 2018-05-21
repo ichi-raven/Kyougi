@@ -53,6 +53,12 @@ enum
 	END,
 };
 
+enum
+{
+	MOVE = 1,
+	REMOVE,
+};
+
 
 extern int Key[256];
 

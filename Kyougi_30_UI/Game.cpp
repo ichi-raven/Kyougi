@@ -15,16 +15,17 @@ Game::Game()
 
 	turn_num = 1;
 
-	limit_turn = get_rand(80, 120);
 
 	blue_score = 0;
 	yellow_score = 0;
 
+	SetMouseDispFlag(true);
 }
 
 void Game::make_stage()
 {
 
+	stage.clear();
 
 	const int R_num = get_rand(9, 12);
 
@@ -94,7 +95,8 @@ void Game::make_stage()
 	//別にいらないけど行数,列数表示
 	printfDx("R%d: C%d\n", stage.size(), stage[0].size() );
 
-	
+
+	limit_turn = get_rand(80, 120);//限界ターンをセット
 	
 }
 
@@ -530,52 +532,92 @@ void Game::Turn(Agent* AGENT)
 	
 	renderer.Draw_color(r_now + move_r, c_now + move_c, CHOSEN, inside_state_trout_now);
 	
-	bool isNotSame = true;
 
-	for (int i = 0; i < 4; ++i)
-	{
-		//if (&agent[i] == agent_now)
-		//	continue;
-
-		if (agent_now->isSamePoint(agent[i], move_r, move_c))
-		{
-			isNotSame = false;
-			break;
-		}
-
-		
-	}
+	agent_now->set_direction(move_r, move_c);
 
 
-	if ((Key[KEY_INPUT_Z] == 1  || Key[KEY_INPUT_M] == 1) && state_trout_now != enemy_color && isNotSame)
+	if ((Key[KEY_INPUT_Z] == 1  || Key[KEY_INPUT_M] == 1) && state_trout_now != enemy_color)
 	{
 		
-		agent_now->move(r_now + move_r, c_now + move_c, stage);
-		agent_now->deploy(r_now + move_r, c_now + move_c, agent_now->get_color(), stage);
+		agent_now->set_doing(MOVE);
 		inputting++;
 		move_r = 0;
 		move_c = 0;
 		return;
 		
 	}
-	else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now != NONE && isNotSame)
+	else if ((Key[KEY_INPUT_X] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now != NONE)
 	{
-		agent_now->remove(r_now + move_r, c_now + move_c, stage);
+		agent_now->set_doing(REMOVE);
 		inputting++;
 		move_r = 0;
 		move_c = 0;
 		return;
 		
 	}
+	else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_W] == 1))
+	{
+		agent_now->set_doing(NONE);
+		inputting++;
+		move_r = 0;
+		move_c = 0;
+		return;
+	}
 	
 	
-	if (state_trout_now != BLUE && state_trout_now != YELLOW)
-		agent_now->deploy(r_now, c_now, agent_now->get_color(), stage);
+	//if (state_trout_now != BLUE && state_trout_now != YELLOW)
+	//	agent_now->deploy(r_now, c_now, agent_now->get_color(), stage);
 
 	
 	return;
 
 		
+}
+
+void Game::Update()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		agent[i].deploy(stage);
+		for (int j = 0; j < 4; ++j)
+		{
+
+			if (i == j)
+				continue;
+			if(agent[i].get_doing() == MOVE)
+				if (agent[i].isSameTarget(agent[j]))
+				{
+
+					agent[i].set_doing(NONE);
+					break;
+				}
+			
+			if (agent[i].get_doing() == REMOVE)
+				if (agent[i].isSamePoint(agent[j]))
+				{
+
+					agent[i].set_doing(NONE);
+					break;
+				}
+
+		}
+
+		switch (agent[i].get_doing())
+		{
+		case NONE:
+			break;
+
+		case MOVE:
+			agent[i].move(stage);
+			break;
+
+		case REMOVE:
+			agent[i].remove(stage);
+			break;
+		}
+
+		agent[i].deploy(stage);
+	}
 }
 
 void Game::mainLoop()
@@ -594,6 +636,8 @@ void Game::mainLoop()
 	case PLAYING:
 		this->Draw_update();//更新
 		
+		if (Key[KEY_INPUT_SPACE] == 1)
+			mode = END;
 		
 		switch (inputting)
 		{
@@ -614,6 +658,9 @@ void Game::mainLoop()
 			break;
 
 		case 4://入力終了
+
+			this->Update();
+
 			this->score_calcurate(BLUE);
 			this->score_calcurate(YELLOW);
 
@@ -637,7 +684,11 @@ void Game::mainLoop()
 		break;
 
 	case END://リトライ
-		mode = INIT;
+		DrawFormatString(X_MIN + X_MAX / 2 - 100, Y_MIN + Y_MAX / 2, GetColor(255, 255, 255), "Game set!\nBlue : %d, Yellow : %d\n", blue_score, yellow_score);
+
+		if(Key[KEY_INPUT_Z] == 1)
+			mode = INIT;
+		
 		break;
 
 	default:
