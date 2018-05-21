@@ -587,15 +587,13 @@ void Game::Update()
 			if(agent[i].get_doing() == MOVE)
 				if (agent[i].isSameTarget(agent[j]))
 				{
-
 					agent[i].set_doing(NONE);
 					break;
 				}
 			
 			if (agent[i].get_doing() == REMOVE)
-				if (agent[i].isSamePoint(agent[j]))
+				if (agent[i].isSamePoint(agent[j]) || agent[i].isSameTarget(agent[j]) )
 				{
-
 					agent[i].set_doing(NONE);
 					break;
 				}

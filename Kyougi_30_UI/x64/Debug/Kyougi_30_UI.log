@@ -1,3 +1,3 @@
 ﻿  Game.cpp
-c:\users\manabey\desktop\repositories\kyougi\kyougi_30_ui\game.cpp(74): warning C4267: '引数': 'size_t' から 'const int' に変換しました。データが失われているかもしれません。
-  Kyougi_30_UI.vcxproj -> C:\Users\ManabeY\Desktop\Repositories\Kyougi\x64\Debug\Kyougi_30_UI.exe
+c:\users\ichi2\git-repositories\kyougi\kyougi_30_ui\game.cpp(74): warning C4267: '引数': 'size_t' から 'const int' に変換しました。データが失われているかもしれません。
+  Kyougi_30_UI.vcxproj -> C:\Users\ichi2\Git-repositories\Kyougi\x64\Debug\Kyougi_30_UI.exe
