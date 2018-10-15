@@ -1,7 +1,7 @@
 #include"Headers_include.hpp"
 #include"Constant_expressions.hpp"
 
-
+#include<stdio.h>
 
 
 
@@ -27,9 +27,17 @@ void Game::make_stage()
 
 	stage.clear();
 
-	const int R_num = get_rand(9, 12);
+	//データの読み取り
 
-	const int C_num = get_rand(9, 12);
+	FILE* input_file = fopen("ファイル名", "r");//ファイルオープン
+
+	
+
+	int R_num = 0;
+
+	int C_num = 0;
+
+	fscanf(input_file, "%d %d:", &R_num, &C_num);//行、列数読み取り
 
 	for (int r = 0; r < R_num; ++r)
 	{
@@ -40,33 +48,50 @@ void Game::make_stage()
 		}
 	}
 
-	std::vector<std::vector<int> > score;
+	std::vector<std::vector<int> > scores;//スコア読み取り
 
-	rnd_score_set(score, R_num, C_num);
+	for (int r = 0; r < stage.size(); ++r)
+	{
+		fscanf(input_file, ":");
+		scores.emplace_back();
+		for (int c = 0; c < stage[0].size(); ++c)
+		{
+			int score;
+			fscanf(input_file, "%d ", &score);
+
+			scores.back().emplace_back(score);
+
+		}
+	}
 
 	for (int r = 0; r < stage.size(); ++r)
 		for (int c = 0; c < stage[0].size(); ++c)
 		{
 			stage[r][c].set_state(NONE);
 			stage[r][c].set_Istate(NONE);
-			stage[r][c].set_score(score[r][c]);
+			stage[r][c].set_score(scores[r][c]);
 		}
 
-	const int agent_defR = get_rand(1, R_num / 2 - 1);
 
-	const int agent_defC = get_rand(1, C_num / 2 - 1);
+	//エージェント座標読み取り
+	int agent_defR[2];
+
+	int agent_defC[2];
+
+
+	fscanf(input_file, ":%d %d:%d %d:", &agent_defR[0], &agent_defC[0], &agent_defR[1], &agent_defC[1]);
 
 	agent[0].set_color(BLUE);
-	agent[0].set_point(agent_defR, agent_defC);
+	agent[0].set_point(agent_defR[0], agent_defC[0]);
 		 
 	agent[1].set_color(BLUE);
-	agent[1].set_point(R_num - agent_defR - 1, agent_defC);
+	agent[1].set_point(agent_defR[1], agent_defC[1]);
 		 
-	agent[2].set_color(YELLOW);
-	agent[2].set_point(agent_defR, C_num - agent_defC - 1);
+	agent[2].set_color(YELLOW);//敵側の仕様が固められない
+	agent[2].set_point(agent_defR[0], C_num - agent_defC[0] - 1);
 		 
-	agent[3].set_color(YELLOW);
-	agent[3].set_point(R_num - agent_defR - 1, C_num - agent_defC - 1);
+	agent[3].set_color(YELLOW);//同上
+	agent[3].set_point(agent_defR[1], C_num - agent_defC[1] - 1);
 
 
 
