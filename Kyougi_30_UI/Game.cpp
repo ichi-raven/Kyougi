@@ -1,12 +1,35 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include"Headers_include.hpp"
 #include"Constant_expressions.hpp"
+#include<random>
 
-#include<stdio.h>
+#include<cstdio>
+#include<cassert>
 
 
 
-Game::Game()
+Game::Game() : data_filename("C:\\Users\\ichi2\\Desktop\\競技サンプル.txt"),
+log_filename("C:\\Users\\ichi2\\Desktop\\競技ログサンプル.txt")
 {
+	// メルセンヌ・ツイスター法による擬似乱数生成器を、
+	// ハードウェア乱数をシードにして初期化
+	std::random_device seed_gen;
+	std::mt19937 engine(seed_gen());
+
+	// 一様整数分布
+	// [-1.0, 1.0)の値の範囲で、等確率に整数を生成する
+	std::uniform_int_distribution<> dist(0, 6);
+
+	std::string funny_str[7] =
+	{
+		"結局うちも起きてんじゃん",
+		"それではわがチームの鮮やかな敗北をダイジェストでお送りします",
+		"AlphaMegurimasu is ready (大嘘)",
+		"高専とは、99%のカフェインと1%のカフェインである",
+		"リソースの無駄?やかましいわ",
+		"プレゼント・デイ　プレゼント・タイム",
+		"git merge -f",
+	};
 
 
 	mode = INIT;
@@ -20,6 +43,12 @@ Game::Game()
 	yellow_score = 0;
 
 	SetMouseDispFlag(true);
+
+	FILE* log_fp = fopen(log_filename.c_str(), "a");//最初の記入
+	
+	fprintf(log_fp, "%s(ここからログ)\n", funny_str[dist(engine)].c_str() );
+	
+	fclose(log_fp);
 }
 
 void Game::make_stage()
@@ -29,7 +58,12 @@ void Game::make_stage()
 
 	//データの読み取り
 
-	FILE* input_file = fopen("ファイル名", "r");//ファイルオープン
+	FILE* input_file = fopen(data_filename.c_str(), "r");
+
+	if (input_file == NULL)//ファイルオープン
+	{
+		assert(!"File open error");
+	}
 
 	
 
@@ -38,6 +72,7 @@ void Game::make_stage()
 	int C_num = 0;
 
 	fscanf(input_file, "%d %d:", &R_num, &C_num);//行、列数読み取り
+
 
 	for (int r = 0; r < R_num; ++r)
 	{
@@ -82,10 +117,10 @@ void Game::make_stage()
 	fscanf(input_file, ":%d %d:%d %d:", &agent_defR[0], &agent_defC[0], &agent_defR[1], &agent_defC[1]);
 
 	agent[0].set_color(BLUE);
-	agent[0].set_point(agent_defR[0], agent_defC[0]);
+	agent[0].set_point(--agent_defR[0], --agent_defC[0]);
 		 
 	agent[1].set_color(BLUE);
-	agent[1].set_point(agent_defR[1], agent_defC[1]);
+	agent[1].set_point(--agent_defR[1], --agent_defC[1]);
 		 
 	agent[2].set_color(YELLOW);//敵側の仕様が固められない
 	agent[2].set_point(agent_defR[0], C_num - agent_defC[0] - 1);
@@ -120,74 +155,9 @@ void Game::make_stage()
 	//別にいらないけど行数,列数表示
 	printfDx("R%d: C%d\n", stage.size(), stage[0].size() );
 
+	fclose(input_file);//ファイル閉じる
 
-	limit_turn = get_rand(80, 120);//限界ターンをセット
 	
-}
-
-void Game::rnd_score_set(std::vector<std::vector<int> >&rndin, const int R_NUM, const int C_NUM)
-{
-	/* なんちゃって確率操作。余裕があれば書き直します */
-
-	std::random_device rnd;
-	std::mt19937 mt(rnd());
-	std::uniform_int_distribution<> rnd33(0, 16);
-	std::uniform_int_distribution<> rnd25(-16, 0);
-	std::uniform_int_distribution<> rnd17(0, 8);
-
-	std::random_device R_bool;
-	std::mt19937 mt2(R_bool());
-	std::uniform_int_distribution<> r_bool(0, 10);
-
-
-	rndin.resize(R_NUM);
-	for (int a = 0; a < R_NUM; a++)
-		rndin[a].resize(C_NUM);
-
-
-	/* 負の数が少なめになるように色々いじっています。 */
-
-	int i, j;
-
-	for (i = 0; i < R_NUM; i++) {
-
-		if (C_NUM % 2 == 0) {
-			for (j = 0; j < C_NUM / 2; j++) {
-				if (r_bool(mt2) == 0) {
-					rndin[i][j] = rnd25(mt);
-					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
-				}
-				else {
-					rndin[i][j] = rnd33(mt);
-					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
-				}
-			}
-		}
-
-		else {
-			for (j = 0; j < C_NUM / 2; j++) {
-				if (r_bool(mt2) == 0) {
-					rndin[i][j] = rnd25(mt);
-					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
-				}
-				else {
-					rndin[i][j] = rnd33(mt);
-					rndin[i][C_NUM - (j + 1)] = rndin[i][j];
-				}
-			}
-
-
-			if (r_bool(mt2) == 0)
-				rndin[i][j] = rnd25(mt);
-			else
-				rndin[i][j] = rnd33(mt);
-
-		}
-
-
-	}
-
-
 }
 
 
@@ -235,7 +205,7 @@ void Game::score_calcurate(const int COLOR)//色を渡すとその色の点数を返す
 	lmd_init_decisionstage();//この一回のみ
 
 
-	lmd_init_checkstage();
+	lmd_init_checkstage();//同上
 
 
 
@@ -444,24 +414,40 @@ void Game::Draw_update()
 		renderer.Draw_Agent(agent[i].get_raw_point(), agent[i].get_col_point(), agent[i].get_color());
 
 	}
-
-
-	
-
-
-
 	
 
 
 	//スコア実装		
-	renderer.Draw_Util(turn_num, limit_turn, blue_score, yellow_score);
+	renderer.Draw_Util(turn_num, blue_score, yellow_score);
 
 
 
 
 }
 
-void Game::Turn(Agent* AGENT)
+void Game::undo()
+{
+	if (Key[KEY_INPUT_U] == 1 && inputting > 0)//一手のUndo
+		--inputting;
+}
+
+void Game::write_turn_log()//ターンのログを記述
+{
+	FILE* log_fp = fopen(log_filename.c_str(), "a");
+
+	fprintf(log_fp, "Turn:%d B1(%d,%d) B2(%d,%d) Y1(%d,%d) Y2(%d,%d)\n",
+		turn_num,
+		agent[0].get_raw_point(), agent[0].get_col_point(),
+		agent[1].get_raw_point(), agent[1].get_col_point(),
+		agent[2].get_raw_point(), agent[2].get_col_point(),
+		agent[3].get_raw_point(), agent[3].get_col_point()
+		);
+
+	fclose(log_fp);//ファイル閉じる
+
+}
+
+void Game::Turn(Agent* AGENT)//渡したエージェントの1ターンの動きをまとめたもの
 {
 
 	
@@ -561,9 +547,9 @@ void Game::Turn(Agent* AGENT)
 	agent_now->set_direction(move_r, move_c);
 
 
-	if ((Key[KEY_INPUT_Z] == 1  || Key[KEY_INPUT_M] == 1) && state_trout_now != enemy_color)
+	//if ((Key[KEY_INPUT_Z] == 1  || Key[KEY_INPUT_M] == 1) && state_trout_now != enemy_color)
+	if (Key[KEY_INPUT_Z] == 1 && state_trout_now != enemy_color)
 	{
-		
 		agent_now->set_doing(MOVE);
 		inputting++;
 		move_r = 0;
@@ -571,7 +557,8 @@ void Game::Turn(Agent* AGENT)
 		return;
 		
 	}
-	else if ((Key[KEY_INPUT_X] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now != NONE)
+	//else if ((Key[KEY_INPUT_X] == 1 || Key[KEY_INPUT_R] == 1) && state_trout_now != NONE)
+	else if (Key[KEY_INPUT_X] == 1 && state_trout_now != NONE)
 	{
 		agent_now->set_doing(REMOVE);
 		inputting++;
@@ -580,7 +567,8 @@ void Game::Turn(Agent* AGENT)
 		return;
 		
 	}
-	else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_W] == 1))
+	//else if ((Key[KEY_INPUT_C] == 1 || Key[KEY_INPUT_W] == 1))
+	else if (Key[KEY_INPUT_C] == 1)
 	{
 		agent_now->set_doing(NONE);
 		inputting++;
@@ -661,6 +649,9 @@ void Game::mainLoop()
 		
 		if (Key[KEY_INPUT_SPACE] == 1)
 			mode = END;
+
+
+		undo();
 		
 		switch (inputting)
 		{
@@ -680,19 +671,25 @@ void Game::mainLoop()
 			this->Turn(&agent[3]);
 			break;
 
-		case 4://入力終了
+		case 4://入力の完了
+			if (Key[KEY_INPUT_RETURN] == 1)
+				++inputting;
+			break;
+
+		case 5://入力終了
+
 
 			this->Update();
 
 			this->score_calcurate(BLUE);
 			this->score_calcurate(YELLOW);
 
+			this->write_turn_log();
+
 
 			inputting = 0;
 
 			++turn_num;
-			if (turn_num >= limit_turn)//設定したターン数を過ぎたらmodeをENDに
-				mode = END;
 		
 			break;
 

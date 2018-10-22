@@ -81,17 +81,20 @@ void Draw::Draw_color(const int R, const int C, const int COLOR, const int INSID
 
 
 	if(INSIDE_COLOR == INSIDE_B)
-		color = GetColor(0, 0, 70);
+		color = GetColor(0, 0, 50);
 	else if(INSIDE_COLOR == INSIDE_Y)
-		color = GetColor(70, 70, 0);
-	else if(INSIDE_COLOR == INSIDE_BOTH)
-		color = GetColor(70, 70, 70);
+		color = GetColor(50, 50, 0);
+	else if (INSIDE_COLOR == INSIDE_BOTH)
+	{
+		printfDx("Came\n");
+		color = GetColor(30, 30, 30);
+	}
 
 
 	if (COLOR == BLUE)
-		color = GetColor(0, 0, 200);
+		color = GetColor(0, 0, 130);
 	else if (COLOR == YELLOW)
-		color = GetColor(200, 200, 0);
+		color = GetColor(140, 140, 0);
 	else if (COLOR == CHOSEN)
 		color = GetColor(200, 200, 200);
 
@@ -106,21 +109,23 @@ void Draw::Draw_Agent(const int R, const int C, const int COLOR)
 {
 	unsigned int color = GetColor(0, 0, 0);
 
+	const int pad = 5;//エージェントの□と枠との空白
+
 	if (COLOR == BLUE)
-		color = GetColor(0, 0, 255);
+		color = GetColor(40, 40, 255);
 	else if (COLOR == YELLOW)
 		color = GetColor(255, 255, 0);
-	else 
+	else
 		assert(!"Color isn't right!");
 
-	DrawCircle(Point[R][C].x + TROUT_SIZE / 2, Point[R][C].y + TROUT_SIZE / 2, TROUT_SIZE / 4, color);
+	DrawBox(Point[R][C].x + pad, Point[R][C].y + pad, Point[R][C].x + TROUT_SIZE - pad, Point[R][C].y + TROUT_SIZE - pad, color, false);
 }
 
-void Draw::Draw_Util(const int TURN, const int LIMIT_TURN, const int B_PTS, const int Y_PTS)
+void Draw::Draw_Util(const int TURN, const int B_PTS, const int Y_PTS)
 {
 	DrawLine(X_MAX, 0, X_MAX, Y_MAX, GetColor(255, 255, 255));//区切り線
 
-	DrawFormatString(680, Y_MAX / 4 + Y_MIN, GetColor(255, 255, 255), "turn : %d\nlimit : %d", TURN, LIMIT_TURN);
+	DrawFormatString(680, Y_MAX / 4 + Y_MIN, GetColor(255, 255, 255), "turn : %d\n", TURN);
 
 	DrawFormatString(680, Y_MAX / 2 + Y_MIN, GetColor(255, 255, 255), "blue : %d", B_PTS);
 

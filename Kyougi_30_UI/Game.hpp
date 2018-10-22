@@ -9,13 +9,15 @@ class Game
 public:
 	Game();
 
-	void make_stage();
-	
-	void rnd_score_set(std::vector<std::vector<int> >&rndin, const int R_NUM, const int C_NUM);//ランダムスコア生成、上記関数でしか使わない
+	void make_stage();//ステージをファイル読み込んで作成
 
 	void score_calcurate(const int COLOR);//計算まとめ
 
 	bool check_within(const int R, const int C, const int COLOR);//再帰関数、上記計算関数内で呼び出す
+
+	void undo();//そのターン内で１手戻せる
+
+	void write_turn_log();//ログ(ファイル名)に現在のTurn:X B1:(x1,y1) B2(x2,y2) Y1(x3,y3) Y2(x4,y4)\n と書き出す 
 
 	void Turn(Agent* AGENT);//移動、撤去、設置まとめ
 
@@ -45,8 +47,10 @@ private:
 
 	int turn_num;//過ぎたターン数
 
-	int limit_turn;//限界ターン
-
 	int inputting;//今入力しているエージェント
+
+	const std::string data_filename;
+
+	const std::string log_filename;
 
 };

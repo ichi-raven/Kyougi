@@ -83,6 +83,9 @@ void Agent::move(std::vector<std::vector<Trout> > &stage)
 	mR += move_R;
 	mC += move_C;
 
+	move_R = 0;
+	move_C = 0;
+
 
 	if (mR < 0 || mR > stage.size())
 		assert(!"x_Size isn't right");
