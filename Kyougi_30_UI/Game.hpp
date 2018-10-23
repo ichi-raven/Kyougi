@@ -3,6 +3,9 @@
 #include"Draw.hpp"
 #include"Trout.hpp"
 #include<vector>
+#include<array>
+
+typedef std::vector<std::vector<Trout> > Stage;
 
 class Game
 {
@@ -15,7 +18,7 @@ public:
 
 	bool check_within(const int R, const int C, const int COLOR);//再帰関数、上記計算関数内で呼び出す
 
-	void undo();//そのターン内で１手戻せる
+	void undo();//そのターン内で１手戻す
 
 	void write_turn_log();//ログ(ファイル名)に現在のTurn:X B1:(x1,y1) B2(x2,y2) Y1(x3,y3) Y2(x4,y4)\n と書き出す 
 
@@ -31,9 +34,13 @@ private:
 
 	int mode;//メインループが何をするかの分岐用
 
-	Agent agent[4];//エージェント4人、前二人が青
+	std::array<Agent, 4>  agent;//エージェント4人、前二人が青
 
-	std::vector<std::vector<Trout> > stage;//Trout型2次元配列
+	std::vector<std::array<Agent, 4> > agent_history;//エージェントの座標等を記録する
+
+	Stage stage;//Trout型2次元配列
+
+	std::vector<Stage> stage_history;//盤面を記録していく
 
 	std::vector<std::vector<bool> > checkstage;//その再帰においてすでに訪れていればfalse, 訪れていなければtrue
 

@@ -17,14 +17,14 @@ log_filename("C:\\Users\\ichi2\\Desktop\\競技ログサンプル.txt")
 	std::mt19937 engine(seed_gen());
 
 	// 一様整数分布
-	// [-1.0, 1.0)の値の範囲で、等確率に整数を生成する
+	// (-1.0, 1.0)の値の範囲で、等確率に整数を生成する
 	std::uniform_int_distribution<> dist(0, 6);
 
 	std::string funny_str[7] =
 	{
 		"結局うちも起きてんじゃん",
 		"それではわがチームの鮮やかな敗北をダイジェストでお送りします",
-		"AlphaMegurimasu is ready (大嘘)",
+		"AlphaGo is ready (大嘘)",
 		"高専とは、99%のカフェインと1%のカフェインである",
 		"リソースの無駄?やかましいわ",
 		"プレゼント・デイ　プレゼント・タイム",
@@ -38,11 +38,13 @@ log_filename("C:\\Users\\ichi2\\Desktop\\競技ログサンプル.txt")
 
 	turn_num = 1;
 
-
 	blue_score = 0;
 	yellow_score = 0;
 
 	SetMouseDispFlag(true);
+
+	stage_history.clear();
+	agent_history.clear();
 
 	FILE* log_fp = fopen(log_filename.c_str(), "a");//最初の記入
 	
@@ -55,6 +57,8 @@ void Game::make_stage()
 {
 
 	stage.clear();
+
+
 
 	//データの読み取り
 
@@ -152,8 +156,9 @@ void Game::make_stage()
 		c = 0;
 	}
 
-	//別にいらないけど行数,列数表示
-	printfDx("R%d: C%d\n", stage.size(), stage[0].size() );
+
+	stage_history.emplace_back(stage);
+	agent_history.emplace_back(agent);
 
 	fclose(input_file);//ファイル閉じる
 
@@ -427,8 +432,30 @@ void Game::Draw_update()
 
 void Game::undo()
 {
-	if (Key[KEY_INPUT_U] == 1 && inputting > 0)//一手のUndo
+	if (Key[KEY_INPUT_U] == 0 || Key[KEY_INPUT_U] > 1 )//Uを1Fだけ
+		return;
+
+
+	if (inputting > 0)
 		--inputting;
+	else if(turn_num > 1)//inputtingを0にし、turn_numを減らし、stageを戻し、先頭を削除し、agentを戻し、先頭を削除する
+	{
+		inputting = 0;
+		--turn_num;
+
+	
+
+		stage = stage_history[stage_history.size() - 2];
+		stage_history.pop_back();
+
+		agent = agent_history[agent_history.size() - 2];
+		agent_history.pop_back();
+
+		this->score_calcurate(BLUE);
+		this->score_calcurate(YELLOW);
+
+	}
+	
 }
 
 void Game::write_turn_log()//ターンのログを記述
@@ -633,6 +660,10 @@ void Game::Update()
 
 void Game::mainLoop()
 {
+
+	//printfDx("%d%d\n", stage_history.size() - 1, agent_history.size() - 1);
+
+
 	switch (mode)
 	{
 	case INIT:
@@ -645,59 +676,59 @@ void Game::mainLoop()
 		break;
 
 	case PLAYING:
-		this->Draw_update();//更新
 		
+
+		this->Draw_update();//描画更新
+
 		if (Key[KEY_INPUT_SPACE] == 1)
 			mode = END;
 
-
-		undo();
+		undo();//入力があれば1手戻す
 		
 		switch (inputting)
 		{
 		case 0:
 			this->Turn(&agent[0]);
 			break;
-
+		
 		case 1:
 			this->Turn(&agent[1]);
 			break;
-
+		
 		case 2:
 			this->Turn(&agent[2]);
 			break;
-
+		
 		case 3:
 			this->Turn(&agent[3]);
 			break;
-
-		case 4://入力の完了
-			if (Key[KEY_INPUT_RETURN] == 1)
-				++inputting;
-			break;
-
-		case 5://入力終了
-
-
+		
+		case 4://入力終了
+		
+		
 			this->Update();
-
+		
 			this->score_calcurate(BLUE);
 			this->score_calcurate(YELLOW);
-
+		
 			this->write_turn_log();
-
-
+		
+			stage_history.emplace_back(stage);
+			agent_history.emplace_back(agent);
+		
+		
+		
 			inputting = 0;
-
+		
 			++turn_num;
 		
 			break;
-
+		
 		default:
 			assert(!"ERROR");
 			break;
 		}
-
+		
 		
 		
 
@@ -715,5 +746,6 @@ void Game::mainLoop()
 		assert(!"ERROR!");
 		break;
 	}
+
 
 }
