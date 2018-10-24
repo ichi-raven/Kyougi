@@ -43,8 +43,12 @@ log_filename("C:\\Users\\ichi2\\Desktop\\競技ログサンプル.txt")
 
 	SetMouseDispFlag(true);
 
-	stage_history.clear();
-	agent_history.clear();
+	stage_history.clear();//全部初期化
+	stage_history.emplace_back();//ステージブランチ一つ追加
+	agent_history.clear();//全部初期化
+	agent_history.emplace_back();//エージェントブランチ一つ追加
+	now_branch = 0;
+
 
 	FILE* log_fp = fopen(log_filename.c_str(), "a");//最初の記入
 	
@@ -157,8 +161,8 @@ void Game::make_stage()
 	}
 
 
-	stage_history.emplace_back(stage);
-	agent_history.emplace_back(agent);
+	stage_history.back().emplace_back(stage);
+	agent_history.back().emplace_back(agent);
 
 	fclose(input_file);//ファイル閉じる
 
@@ -432,30 +436,71 @@ void Game::Draw_update()
 
 void Game::undo()
 {
-	if (Key[KEY_INPUT_U] == 0 || Key[KEY_INPUT_U] > 1 )//Uを1Fだけ
+	if (inputting < 1)//前のターンに戻ってしまう場合
 		return;
 
+	--inputting;
+}
 
-	if (inputting > 0)
-		--inputting;
-	else if(turn_num > 1)//inputtingを0にし、turn_numを減らし、stageを戻し、先頭を削除し、agentを戻し、先頭を削除する
+void Game::Turn_undo()
+{
+
+	
+	static int stage_undo_dest_index_diff = 2;//行先の最新との差
+	static int agent_undo_dest_index_diff = 2;//同上
+
+	if (turn_num < 2)
+		return;
+
+	inputting = 0;
+	--turn_num;
+
+
+	std::vector<Stage> now_stage_branch = stage_history.at(now_branch);//現在のブランチを新しいブランチ用に格納
+	std::vector<std::array<Agent, 4> > now_agent_branch = agent_history.at(now_branch);//同上
+	
+
+	stage = now_stage_branch.at(now_stage_branch.size() - stage_undo_dest_index_diff);//前のブランチの戻るはずの地点をstageに入れる
+	now_stage_branch.pop_back();
+	stage_history.emplace_back(now_stage_branch);//ブランチ追加
+
+	agent = now_agent_branch.at(now_agent_branch.size() - agent_undo_dest_index_diff);//前のブランチの戻るはずの地点をagentに入れる
+	now_agent_branch.pop_back();
+	agent_history.emplace_back(now_agent_branch);//ブランチを追加
+	//agent_history.back().emplace_back(agent);//上の地点からスタート
+
+	++now_branch;//現在のブランチは一つ先となる
+
+
+
+
+	printfDx("%d,%d, %d\n", stage_history.back().size(), agent_history.back().size(), now_branch);
+
+	
+
+	this->score_calcurate(BLUE);
+	this->score_calcurate(YELLOW);
+
+}
+
+void Game::Turn_redo()
+{
+	if (stage_history.size() < 2 || agent_history.size() < 2)
 	{
-		inputting = 0;
-		--turn_num;
-
-	
-
-		stage = stage_history[stage_history.size() - 2];
-		stage_history.pop_back();
-
-		agent = agent_history[agent_history.size() - 2];
-		agent_history.pop_back();
-
-		this->score_calcurate(BLUE);
-		this->score_calcurate(YELLOW);
-
+		printfDx("Can't redo\n");
+		return;
 	}
-	
+	inputting = 0;
+	++turn_num;
+
+	stage_history.pop_back();//最新ブランチを削除し前のブランチを最新とする
+	stage = stage_history.back().back();
+
+	agent_history.pop_back();//同上
+	agent = agent_history.back().back();
+	--now_branch;
+
+	printfDx("%d,%d, %d\n", stage_history.back().size(), agent_history.back().size(), now_branch);
 }
 
 void Game::write_turn_log()//ターンのログを記述
@@ -609,6 +654,8 @@ void Game::Turn(Agent* AGENT)//渡したエージェントの1ターンの動きをまとめたもの
 	//	agent_now->deploy(r_now, c_now, agent_now->get_color(), stage);
 
 	
+
+	
 	return;
 
 		
@@ -678,12 +725,22 @@ void Game::mainLoop()
 	case PLAYING:
 		
 
-		this->Draw_update();//描画更新
 
-		if (Key[KEY_INPUT_SPACE] == 1)
+		if (Key[KEY_INPUT_SPACE] == 1)//終了コマンド
 			mode = END;
 
-		undo();//入力があれば1手戻す
+		if (Key[KEY_INPUT_U] == 1)//Uを1Fだけ
+		{
+			undo();//そのターン内のundo
+
+			if (Key[KEY_INPUT_LCONTROL] > 0 && Key[KEY_INPUT_LSHIFT] > 0)
+				Turn_redo();//ターンのredo
+			else if (Key[KEY_INPUT_LCONTROL] > 0)
+				Turn_undo();//ターンのundo
+			
+		}
+		
+		this->Draw_update();//描画更新
 		
 		switch (inputting)
 		{
@@ -704,6 +761,10 @@ void Game::mainLoop()
 			break;
 		
 		case 4://入力終了
+			if (Key[KEY_INPUT_RETURN] == 1)
+				++inputting;
+			break;
+		case 5:
 		
 		
 			this->Update();
@@ -713,9 +774,9 @@ void Game::mainLoop()
 		
 			this->write_turn_log();
 		
-			stage_history.emplace_back(stage);
-			agent_history.emplace_back(agent);
-		
+			agent_history.back().emplace_back(agent);//現在ブランチでagentのhistoryを追加
+			stage_history.back().emplace_back(stage);//現在ブランチでstageのhistoryを追加
+			
 		
 		
 			inputting = 0;
@@ -725,10 +786,9 @@ void Game::mainLoop()
 			break;
 		
 		default:
-			assert(!"ERROR");
+			assert(!"switch ERROR");
 			break;
 		}
-		
 		
 		
 
